@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>JetBrains.PresentationAssistant</id>
+    <title>Presentation Assistant</title>
+    <version>1.0.0-alpha-20150105</version>
+    <authors>JetBrains</authors>
+    <owners>JetBrains</owners>
+    <description></description>
+    <summary>Shows the name and keyboard shortcuts of invoked actions.</summary>
+    <projectUrl>https://github.com/JetBrains/resharper-presentation-assistant</projectUrl>
+    <licenseUrl>https://raw.githubusercontent.com/JetBrains/resharper-presentaton-assistant/license.txt</licenseUrl>
+    <iconUrl>http://resharper-plugins.jetbrains.com/Content/Images/packageReSharper.png</iconUrl>
+    <copyright>Copyright 2014 JetBrains, s.r.o</copyright>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <dependencies>
+      <dependency id="Wave" version="[1.0]" />
+    </dependencies>
+    <tags>resharper presentation assistant keymap</tags>
+  </metadata>
+  <files>
+    <!-- Plugin -->
+    <file src="..\src\resharper-presentation-assistant\bin\Release\JetBrains.ReSharper.Plugins.PresentationAssistant.dll"
+          target="DotFiles" />
+  </files>
+</package>
