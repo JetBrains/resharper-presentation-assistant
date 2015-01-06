@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using JetBrains.ActionManagement;
 using JetBrains.Application;
 using JetBrains.Application.Parts;
@@ -13,8 +14,14 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     [ShellComponent(Requirement = InstantiationRequirement.Instant)]
     public class PresentationAssistant
     {
+        private static readonly TimeSpan MultiplierTimeout = TimeSpan.FromSeconds(10);
+
         private readonly PresentationAssistantWindowOwner presentationAssistantWindowOwner;
         private readonly IActionShortcuts actionShortcuts;
+
+        private DateTime lastDisplayed;
+        private string lastActionId;
+        private int multiplier;
 
         public PresentationAssistant(Lifetime lifetime, ActionEvents actionEvents,
             PresentationAssistantWindowOwner presentationAssistantWindowOwner, IActionShortcuts actionShortcuts, IActionDefs defs)
@@ -32,16 +39,26 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             var text = MnemonicStore.RemoveMnemonicMark(obj.ActionDef.Text);
             text = string.IsNullOrEmpty(text) ? obj.ActionDef.ActionId : text;
 
+            var now = DateTime.UtcNow;
+            if (obj.ActionDef.ActionId != lastActionId)
+                multiplier = 1;
+            else if (now - lastDisplayed < MultiplierTimeout)
+                multiplier++;
+
             var shortcut = new Shortcut
             {
                 Text = text,
                 Description = obj.ActionDef.Description,
                 VsShortcut = GetPrimaryShortcut(obj.ActionDef.VsShortcuts),
                 IntellijShortcut = GetPrimaryShortcut(obj.ActionDef.IdeaShortcuts),
-                CurrentScheme = actionShortcuts.CurrentScheme
+                CurrentScheme = actionShortcuts.CurrentScheme,
+                Multiplier = multiplier
             };
 
             presentationAssistantWindowOwner.Show(shortcut);
+
+            lastDisplayed = now;
+            lastActionId = obj.ActionDef.ActionId;
         }
 
         private ShortcutSequence GetPrimaryShortcut(string[] shortcuts)
@@ -109,6 +126,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     {
         public string Text { get; set; }
         public string Description { get; set; } // Only used by 1 action in ReSharper!
+        public int Multiplier { get; set; }
         public ShortcutSequence VsShortcut { get; set; }
         public ShortcutSequence IntellijShortcut { get; set; }
         public ShortcutScheme CurrentScheme { get; set; }
@@ -121,6 +139,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public bool HasIntellijShortcuts
         {
             get { return IntellijShortcut != null; }
+        }
+
+        public bool HasMultiplier
+        {
+            get { return Multiplier > 1; }
         }
     }
 }

@@ -43,5 +43,19 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 };
             }
         }
+
+        public static Shortcut MultiplierShortcut
+        {
+            get
+            {
+                return new Shortcut
+                {
+                    Text = "Highlight Usages in File",
+                    VsShortcut = new ShortcutSequence(new ShortcutDetails("F11", KeyboardModifiers.Shift | KeyboardModifiers.Alt)),
+                    IntellijShortcut = new ShortcutSequence(new ShortcutDetails("F7", KeyboardModifiers.Control | KeyboardModifiers.Shift)),
+                    Multiplier = 2
+                };
+            }
+        }
     }
 }
