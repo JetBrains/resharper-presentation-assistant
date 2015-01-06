@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:presentationAssistant="clr-namespace:JetBrains.ReSharper.Plugins.PresentationAssistant"
-        xmlns:jui="urn:schemas-jetbrains-com:jetbrains-ui-avalon"
+        xmlns:pa="clr-namespace:JetBrains.ReSharper.Plugins.PresentationAssistant"
         mc:Ignorable="d"
         Width="Auto" Height="Auto"
         ShowActivated="False"
@@ -18,22 +17,111 @@
         SizeToContent="WidthAndHeight"
         AllowsTransparency="True"
         Opacity="0.8"
-        d:DataContext="{d:DesignInstance Type=presentationAssistant:Shortcut}">
+        d:DataContext="{x:Static pa:SampleData.MultipleShortcut}">
+    
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        
+        <Style x:Key="Keyboard" TargetType="ContentControl">
+            <Setter Property="Margin" Value="0,0,3,0" />
+            <Setter Property="FontFamily" Value="Arial" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontStyle" Value="Italic" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContentControl}">
+                        <Border BorderThickness="1" BorderBrush="Black" CornerRadius="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="3,4,17,1">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ShortcutSequenceItemsStyle" TargetType="ItemsControl">
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="SeparatorTextBlock" Text=", " />
+                            <ContentPresenter Content="{Binding}"/>
+                        </StackPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                <Setter Property="Visibility" TargetName="SeparatorTextBlock" Value="Collapsed" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-    <!--Background="#FFBAEEBA"-->
-  <!--Background="#FF497549"-->
+        <Style x:Key="ShortcutDetailsItemsStyle" TargetType="ItemsControl">
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="SeparatorTextBlock2" Text=" " />
+                            <ContentPresenter Content="{Binding}"/>
+                        </StackPanel>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                <Setter Property="Visibility" TargetName="SeparatorTextBlock2" Value="Collapsed" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate DataType="{x:Type pa:ShortcutSequence}">
+            <ItemsControl ItemsSource="{Binding Details}" Style="{StaticResource ShortcutDetailsItemsStyle}" />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type pa:ShortcutDetails}">
+            <StackPanel Orientation="Horizontal">
+                <!-- This is the order they appear in menus - Control Shift Alt -->
+                <ContentControl Visibility="{Binding HasControl, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource Keyboard}">ctrl</ContentControl>
+                <ContentControl Visibility="{Binding HasShift, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource Keyboard}">shift</ContentControl>
+                <ContentControl Visibility="{Binding HasAlt, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Style="{StaticResource Keyboard}">alt</ContentControl>
+                <TextBlock Text="{Binding Key}" />
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+  <!-- Dark theme colours: Black border + #FF497549 background-->
+  <!-- Light theme colours: border? + #FFBAEEBA background -->
 
     <Border BorderThickness="1" BorderBrush="Black" Padding="10 5 10 5">
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <jui:RichTextView />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock>
+                <Bold><Run Text="{Binding Text, Mode=OneTime}" /></Bold>
+                <TextBlock VerticalAlignment="Bottom" Visibility="{Binding HasShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    via
+                    <InlineUIContainer BaselineAlignment="TextBottom">
+                        <ItemsControl ItemsSource="{Binding VsShortcuts, Mode=OneTime}" Style="{StaticResource ShortcutSequenceItemsStyle}" />
+                    </InlineUIContainer>
+                    <TextBlock Visibility="{Binding HasIntellijShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        (<InlineUIContainer BaselineAlignment="TextBottom">
+                            <ItemsControl ItemsSource="{Binding IntellijShortcuts, Mode=OneTime}" Margin="2,0,0,0" Style="{StaticResource ShortcutSequenceItemsStyle}" />
+                        </InlineUIContainer>
+                        for IntelliJ)
+                    </TextBlock>
+                </TextBlock>
+            </TextBlock>
         </StackPanel>
     </Border>
-
-    <!--<StackPanel Orientation="Vertical">
-    <TextBlock Text="{Binding Text}"></TextBlock>
-    <TextBlock Text="{Binding Description}"></TextBlock>
-    <TextBlock Text="{Binding VsShortcut}"></TextBlock>
-    <TextBlock Text="{Binding IntellijShortcut}"></TextBlock>
-    <TextBlock Text="{Binding CurrentScheme}"></TextBlock>
-  </StackPanel>-->
 </Window>
