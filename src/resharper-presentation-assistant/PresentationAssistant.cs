@@ -44,11 +44,14 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             else if (now - lastDisplayed < MultiplierTimeout)
                 multiplier++;
 
-            var vsShortcut = GetPrimaryShortcut(obj.ActionDef.VsShortcuts);
-            var intellijShortcut = GetPrimaryShortcut(obj.ActionDef.IdeaShortcuts);
+            var vsShortcut = GetPrimaryShortcutSequence(obj.ActionDef.VsShortcuts);
+            ShortcutSequence intellijShortcut = null;
             // TODO: Make this a setting? Only show secondary scheme if different
-            if (Equals(intellijShortcut, vsShortcut))
-                intellijShortcut = null;
+            if (!HasSamePrimaryShortcuts(obj.ActionDef))
+                intellijShortcut = GetPrimaryShortcutSequence(obj.ActionDef.IdeaShortcuts);
+
+            if (intellijShortcut == null && vsShortcut == null)
+                vsShortcut = GetWellKnownShortcutSequence(obj.ActionDef);
 
             var shortcut = new Shortcut
             {
@@ -66,7 +69,17 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             lastActionId = obj.ActionDef.ActionId;
         }
 
-        private ShortcutSequence GetPrimaryShortcut(string[] shortcuts)
+        private static bool HasSamePrimaryShortcuts(IActionDefWithId actionDef)
+        {
+            var vsShortcuts = actionDef.VsShortcuts ?? EmptyArray<string>.Instance;
+            var ideaShortcuts = actionDef.IdeaShortcuts ?? EmptyArray<string>.Instance;
+            if (vsShortcuts.Length > 0 && ideaShortcuts.Length > 0)
+                return vsShortcuts[0] == ideaShortcuts[0];
+
+            return false;
+        }
+
+        private static ShortcutSequence GetPrimaryShortcutSequence(string[] shortcuts)
         {
             if (shortcuts == null || shortcuts.Length == 0)
                 return null;
