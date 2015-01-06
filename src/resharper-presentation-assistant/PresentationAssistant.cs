@@ -45,10 +45,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 multiplier++;
 
             var vsShortcut = GetPrimaryShortcut(obj.ActionDef.VsShortcuts);
-            ShortcutSequence intellijShortcut = null;
+            var intellijShortcut = GetPrimaryShortcut(obj.ActionDef.IdeaShortcuts);
             // TODO: Make this a setting? Only show secondary scheme if different
-            if (obj.ActionDef.VsShortcuts[0] != obj.ActionDef.IdeaShortcuts[0])
-                intellijShortcut = GetPrimaryShortcut(obj.ActionDef.IdeaShortcuts);
+            if (Equals(intellijShortcut, vsShortcut))
+                intellijShortcut = null;
 
             var shortcut = new Shortcut
             {
@@ -103,12 +103,40 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         }
 
         public ShortcutDetails[] Details { get; private set; }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((ShortcutSequence) obj);
+        }
+
+        protected bool Equals(ShortcutSequence other)
+        {
+            if (Details.Length != other.Details.Length)
+                return false;
+            for (int i = 0; i < Details.Length; i++)
+            {
+                if (Details[i] != other.Details[i])
+                    return false;
+            }
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return (Details != null ? Details.GetHashCode() : 0);
+        }
     }
 
     public class ShortcutDetails
     {
+        private readonly KeyboardModifiers modifiers;
+
         public ShortcutDetails(string key, KeyboardModifiers modifiers = KeyboardModifiers.None)
         {
+            this.modifiers = modifiers;
             Key = key;
             HasAlt = (modifiers & KeyboardModifiers.Alt) != 0;
             HasControl = (modifiers & KeyboardModifiers.Control) != 0;
@@ -116,9 +144,30 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         }
 
         public string Key { get; set; }
-        public bool HasAlt { get; set; }
-        public bool HasControl { get; set; }
-        public bool HasShift { get; set; }
+        public bool HasAlt { get; private set; }
+        public bool HasControl { get; private set; }
+        public bool HasShift { get; private set; }
+
+        protected bool Equals(ShortcutDetails other)
+        {
+            return modifiers == other.modifiers && string.Equals(Key, other.Key);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((ShortcutDetails) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((int) modifiers*397) ^ (Key != null ? Key.GetHashCode() : 0);
+            }
+        }
     }
 
     public class Shortcut
