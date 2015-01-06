@@ -44,12 +44,18 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             else if (now - lastDisplayed < MultiplierTimeout)
                 multiplier++;
 
+            var vsShortcut = GetPrimaryShortcut(obj.ActionDef.VsShortcuts);
+            ShortcutSequence intellijShortcut = null;
+            // TODO: Make this a setting? Only show secondary scheme if different
+            if (obj.ActionDef.VsShortcuts[0] != obj.ActionDef.IdeaShortcuts[0])
+                intellijShortcut = GetPrimaryShortcut(obj.ActionDef.IdeaShortcuts);
+
             var shortcut = new Shortcut
             {
                 Text = text,
                 Description = obj.ActionDef.Description,
-                VsShortcut = GetPrimaryShortcut(obj.ActionDef.VsShortcuts),
-                IntellijShortcut = GetPrimaryShortcut(obj.ActionDef.IdeaShortcuts),
+                VsShortcut = vsShortcut,
+                IntellijShortcut = intellijShortcut,
                 CurrentScheme = actionShortcuts.CurrentScheme,
                 Multiplier = multiplier
             };
@@ -79,7 +85,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 return null;
 
             var details = new ShortcutDetails[parsedShortcut.KeyboardShortcuts.Length];
-            for (var i = 0; i < parsedShortcut.KeyboardShortcuts.Length; i++)
+            for (int i = 0; i < parsedShortcut.KeyboardShortcuts.Length; i++)
             {
                 var keyboardShortcut = parsedShortcut.KeyboardShortcuts[i];
                 details[i] = new ShortcutDetails(KeyConverter.Convert(keyboardShortcut.Key),
