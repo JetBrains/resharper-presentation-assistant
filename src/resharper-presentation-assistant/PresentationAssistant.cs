@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using JetBrains.ActionManagement;
 using JetBrains.Application;
 using JetBrains.Application.Parts;
@@ -80,19 +79,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 return null;
 
             var details = new ShortcutDetails[parsedShortcut.KeyboardShortcuts.Length];
-            for (int i = 0; i < parsedShortcut.KeyboardShortcuts.Length; i++)
+            for (var i = 0; i < parsedShortcut.KeyboardShortcuts.Length; i++)
             {
                 var keyboardShortcut = parsedShortcut.KeyboardShortcuts[i];
-                details[i] = new ShortcutDetails(GetKey(keyboardShortcut.Key), keyboardShortcut.Modifiers);
+                details[i] = new ShortcutDetails(KeyConverter.Convert(keyboardShortcut.Key),
+                    keyboardShortcut.Modifiers);
             }
             return new ShortcutSequence(details);
-        }
-
-        private string GetKey(Keys key)
-        {
-            // TODO: Get rid of this (static?). Check that we don't need to do any other conversions
-            var converter = new KeysConverter();
-            return converter.ConvertToString(key);
         }
     }
 

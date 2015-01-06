@@ -134,6 +134,7 @@
   <ItemGroup>
     <Compile Include="BasePopupWindow.cs" />
     <Compile Include="FadingWpfPopupWindow.cs" />
+    <Compile Include="KeyConverter.cs" />
     <Compile Include="PresentationAssistant.cs" />
     <Compile Include="PresentationAssistantPopupWindowContext.cs" />
     <Compile Include="PresentationAssistantWindow.xaml.cs">
