@@ -10,7 +10,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     [ShellComponent]
     public class PresentationAssistantWindowOwner
     {
-        private static readonly TimeSpan VisibleTimeSpan = TimeSpan.FromSeconds(4);
+        private static readonly TimeSpan VisibleTimeSpan = TimeSpan.FromSeconds(5);
 
         private readonly IThreading threading;
         private readonly PresentationAssistantPopupWindowContext context;
