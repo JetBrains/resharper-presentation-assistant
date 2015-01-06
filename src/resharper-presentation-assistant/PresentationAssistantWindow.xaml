@@ -99,14 +99,14 @@
                     <InlineUIContainer BaselineAlignment="TextBottom">
                         <ContentControl Content="{Binding VsShortcut, Mode=OneTime}" />
                     </InlineUIContainer>
-                    <TextBlock Visibility="{Binding HasIntellijShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Visibility="{Binding HasIntellijShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="5,0,0,0">
                         (<InlineUIContainer BaselineAlignment="TextBottom">
                             <ContentControl Content="{Binding IntellijShortcut, Mode=OneTime}" />
                         </InlineUIContainer>
                         for IntelliJ)
                     </TextBlock>
                 </TextBlock>
-                <TextBlock Visibility="{Binding HasMultiplier, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Visibility="{Binding HasMultiplier, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="3,0,0,0">
                     &#x00d7;<Run Text="{Binding Multiplier}"></Run>
                 </TextBlock>
             </TextBlock>
