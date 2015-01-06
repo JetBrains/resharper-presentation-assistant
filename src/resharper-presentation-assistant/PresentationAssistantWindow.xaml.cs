@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-using JetBrains.ActionManagement;
-using JetBrains.UI.RichText;
+﻿using JetBrains.ActionManagement;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
@@ -26,8 +24,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 return new Shortcut
                 {
                     Text = "Highlight Usages in File",
-                    VsShortcuts = new []{new ShortcutSequence(new ShortcutDetails("F11", KeyboardModifiers.Shift | KeyboardModifiers.Alt))},
-                    IntellijShortcuts = new[] { new ShortcutSequence(new ShortcutDetails("F7", KeyboardModifiers.Control | KeyboardModifiers.Shift)) }
+                    VsShortcut = new ShortcutSequence(new ShortcutDetails("F11", KeyboardModifiers.Shift | KeyboardModifiers.Alt)),
+                    IntellijShortcut = new ShortcutSequence(new ShortcutDetails("F7", KeyboardModifiers.Control | KeyboardModifiers.Shift))
                 };
             }
         }
@@ -40,22 +38,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 return new Shortcut
                 {
                     Text = "Run Unit Tests",
-                    VsShortcuts = new[] { new ShortcutSequence(ctrlR, new ShortcutDetails("T")) },
-                    IntellijShortcuts = new[] { new ShortcutSequence(ctrlR, new ShortcutDetails("T")) }
-                };
-            }
-        }
-
-        public static Shortcut MultipleShortcut
-        {
-            get
-            {
-                var ctrlR = new ShortcutDetails("R", KeyboardModifiers.Control);
-                return new Shortcut()
-                {
-                    Text = "Rename",
-                    VsShortcuts = new []{ new ShortcutSequence(ctrlR, new ShortcutDetails("R")), new ShortcutSequence(ctrlR, ctrlR) },
-                    IntellijShortcuts = new []{ new ShortcutSequence(new ShortcutDetails("F2")), new ShortcutSequence(new ShortcutDetails("F6", KeyboardModifiers.Shift)) }
+                    VsShortcut = new ShortcutSequence(ctrlR, new ShortcutDetails("T")),
+                    IntellijShortcut = new ShortcutSequence(ctrlR, new ShortcutDetails("T"))
                 };
             }
         }

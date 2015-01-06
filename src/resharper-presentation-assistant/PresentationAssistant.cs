@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using JetBrains.ActionManagement;
 using JetBrains.Application;
 using JetBrains.Application.Parts;
@@ -8,7 +7,6 @@ using JetBrains.UI.ActionsRevised.Handlers;
 using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.UI.ActionsRevised.Shortcuts;
 using JetBrains.UI.PopupMenu.Impl;
-using JetBrains.Util;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
@@ -34,7 +32,23 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             var text = MnemonicStore.RemoveMnemonicMark(obj.ActionDef.Text);
             text = string.IsNullOrEmpty(text) ? obj.ActionDef.ActionId : text;
 
-            // TODO: Only report the first shortcut
+            var shortcut = new Shortcut
+            {
+                Text = text,
+                Description = obj.ActionDef.Description,
+                VsShortcut = GetPrimaryShortcut(obj.ActionDef.VsShortcuts),
+                IntellijShortcut = GetPrimaryShortcut(obj.ActionDef.IdeaShortcuts),
+                CurrentScheme = actionShortcuts.CurrentScheme
+            };
+
+            presentationAssistantWindowOwner.Show(shortcut);
+        }
+
+        private ShortcutSequence GetPrimaryShortcut(string[] shortcuts)
+        {
+            if (shortcuts == null || shortcuts.Length == 0)
+                return null;
+
             // ReSharper registers chords twice, once where the second char doesn't have modifiers
             // and once where the second char repeats the modifier of the first char.
             // E.g. Ctrl+R, R and Ctrl+R, Ctrl+R. This allows for flexibility in hitting that chord
@@ -43,32 +57,23 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             // SafeDelete (VS): Ctrl+R, D and Alt+Delete
             // Rename (IntelliJ): F2 and Shift+F6
             // These can be safely ignored, meaning we can just show the primary shortcut
-            var shortcut = new Shortcut
+            var shortcut = shortcuts[0];
+            var parsedShortcut = ShortcutUtil.ParseKeyboardShortcut(shortcut);
+            if (parsedShortcut == null)
+                return null;
+
+            var details = new ShortcutDetails[parsedShortcut.KeyboardShortcuts.Length];
+            for (int i = 0; i < parsedShortcut.KeyboardShortcuts.Length; i++)
             {
-                Text = text,
-                Description = obj.ActionDef.Description,
-                VsShortcuts = GetShortcuts(obj.ActionDef.VsShortcuts),
-                IntellijShortcuts = GetShortcuts(obj.ActionDef.IdeaShortcuts),
-                CurrentScheme = actionShortcuts.CurrentScheme
-            };
-
-            presentationAssistantWindowOwner.Show(shortcut);
-        }
-
-        // TODO: This is getting expensive in terms of allocations...
-        private ShortcutSequence[] GetShortcuts(string[] shortcuts)
-        {
-            // TODO: Remove near-duplicates (e.g. Control+R R, Control+R Control+R)
-            var parsedShortcuts = from s in shortcuts ?? EmptyArray<string>.Instance
-                let parsed = ShortcutUtil.ParseKeyboardShortcut(s)
-                let details = from k in parsed.KeyboardShortcuts
-                    select new ShortcutDetails(GetKey(k.Key), k.Modifiers)
-                select new ShortcutSequence(details.ToArray());
-            return parsedShortcuts.ToArray();
+                var keyboardShortcut = parsedShortcut.KeyboardShortcuts[i];
+                details[i] = new ShortcutDetails(GetKey(keyboardShortcut.Key), keyboardShortcut.Modifiers);
+            }
+            return new ShortcutSequence(details);
         }
 
         private string GetKey(Keys key)
         {
+            // TODO: Get rid of this (static?). Check that we don't need to do any other conversions
             var converter = new KeysConverter();
             return converter.ConvertToString(key);
         }
@@ -104,18 +109,18 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     {
         public string Text { get; set; }
         public string Description { get; set; } // Only used by 1 action in ReSharper!
-        public ShortcutSequence[] VsShortcuts { get; set; }
-        public ShortcutSequence[] IntellijShortcuts { get; set; }
+        public ShortcutSequence VsShortcut { get; set; }
+        public ShortcutSequence IntellijShortcut { get; set; }
         public ShortcutScheme CurrentScheme { get; set; }
 
         public bool HasShortcuts
         {
-            get { return VsShortcuts.Length > 0; }
+            get { return VsShortcut != null; }
         }
 
         public bool HasIntellijShortcuts
         {
-            get { return IntellijShortcuts.Length > 0; }
+            get { return IntellijShortcut != null; }
         }
     }
 }

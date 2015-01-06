@@ -17,7 +17,7 @@
         SizeToContent="WidthAndHeight"
         AllowsTransparency="True"
         Opacity="0.8"
-        d:DataContext="{x:Static pa:SampleData.MultipleShortcut}">
+        d:DataContext="{x:Static pa:SampleData.ChordShortcut}">
     
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -30,7 +30,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContentControl}">
-                        <Border BorderThickness="1" BorderBrush="Black" CornerRadius="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="3,4,17,1">
+                        <Border BorderThickness="1" BorderBrush="Black" CornerRadius="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Padding="3,6,17,1">
                             <ContentPresenter />
                         </Border>
                     </ControlTemplate>
@@ -38,31 +38,6 @@
             </Setter>
         </Style>
         
-        <Style x:Key="ShortcutSequenceItemsStyle" TargetType="ItemsControl">
-            <Setter Property="ItemsPanel">
-                <Setter.Value>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="SeparatorTextBlock" Text=", " />
-                            <ContentPresenter Content="{Binding}"/>
-                        </StackPanel>
-                        <DataTemplate.Triggers>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
-                                <Setter Property="Visibility" TargetName="SeparatorTextBlock" Value="Collapsed" />
-                            </DataTrigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <Style x:Key="ShortcutDetailsItemsStyle" TargetType="ItemsControl">
             <Setter Property="ItemsPanel">
                 <Setter.Value>
@@ -74,13 +49,13 @@
             <Setter Property="ItemTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock x:Name="SeparatorTextBlock2" Text=" " />
+                        <StackPanel Orientation="Horizontal" Margin="2,0,0,0">
+                            <TextBlock x:Name="SeparatorTextBlock" Text=", " />
                             <ContentPresenter Content="{Binding}"/>
                         </StackPanel>
                         <DataTemplate.Triggers>
                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
-                                <Setter Property="Visibility" TargetName="SeparatorTextBlock2" Value="Collapsed" />
+                                <Setter Property="Visibility" TargetName="SeparatorTextBlock" Value="Collapsed" />
                             </DataTrigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>
@@ -112,11 +87,11 @@
                 <TextBlock VerticalAlignment="Bottom" Visibility="{Binding HasShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
                     via
                     <InlineUIContainer BaselineAlignment="TextBottom">
-                        <ItemsControl ItemsSource="{Binding VsShortcuts, Mode=OneTime}" Style="{StaticResource ShortcutSequenceItemsStyle}" />
+                        <ContentControl Content="{Binding VsShortcut, Mode=OneTime}" />
                     </InlineUIContainer>
-                    <TextBlock Visibility="{Binding HasIntellijShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Visibility="{Binding HasIntellijShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="5,0,0,0">
                         (<InlineUIContainer BaselineAlignment="TextBottom">
-                            <ItemsControl ItemsSource="{Binding IntellijShortcuts, Mode=OneTime}" Margin="2,0,0,0" Style="{StaticResource ShortcutSequenceItemsStyle}" />
+                            <ContentControl Content="{Binding IntellijShortcut, Mode=OneTime}" />
                         </InlineUIContainer>
                         for IntelliJ)
                     </TextBlock>
