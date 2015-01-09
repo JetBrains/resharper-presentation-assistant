@@ -174,6 +174,7 @@
     </Compile>
     <Compile Include="PresentationAssistantWindowOwner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShortcutFactory.cs" />
     <Compile Include="VisualStudioPane.cs" />
     <Compile Include="VsShortcutFinder.cs" />
     <Compile Include="WpfPopupWindow.cs" />
