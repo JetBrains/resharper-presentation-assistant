@@ -38,7 +38,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public ShortcutSequence IntellijShortcut { get; set; }
         public ShortcutScheme CurrentScheme { get; set; }
 
-        public bool HasShortcuts
+        public bool HasVsShortcuts
         {
             get { return VsShortcut != null; }
         }
@@ -46,6 +46,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public bool HasIntellijShortcuts
         {
             get { return IntellijShortcut != null; }
+        }
+
+        public bool HasShortcuts
+        {
+            // VS shortcuts are the primary. If we don't have them, don't show anything
+            get { return HasVsShortcuts; }
         }
 
         public bool HasMultiplier

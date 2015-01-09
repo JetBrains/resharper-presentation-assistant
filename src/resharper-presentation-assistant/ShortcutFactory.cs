@@ -44,39 +44,26 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private void SetShortcuts(Shortcut shortcut, IActionDefWithId def)
         {
-            var vsShortcut = GetPrimaryShortcutSequence(def.VsShortcuts);
+            // TODO: Should this be an option in the options dialog? Show secondary scheme if different?
+            const bool hideSecondarySchemeIfDifferent = false;
+
+            SetGivenShortcuts(shortcut, def, hideSecondarySchemeIfDifferent);
+            SetVsOverriddenShortcuts(shortcut, def);
+            SetWellKnownShortcuts(shortcut, def, hideSecondarySchemeIfDifferent);
+        }
+
+        private void SetGivenShortcuts(Shortcut shortcut, IActionDefWithId def, bool hideSecondarySchemeIfDifferent)
+        {
+            shortcut.VsShortcut = GetFirstShortcutSequence(def.VsShortcuts);
+
             // TODO: Make this a setting? Only show secondary scheme if different?
             ShortcutSequence intellijShortcut = null;
-            if (!HasSamePrimaryShortcuts(def))
-                intellijShortcut = GetPrimaryShortcutSequence(def.IdeaShortcuts);
-
-            // There's no primary shortcut, try and find it by asking Visual Studio for the
-            // shortcut of the overridden VS command (if there is one). Find any associated
-            // intelliJ shortcut
-            if (vsShortcut == null)
-                vsShortcut = GetWellKnownShortcutSequence(def, out intellijShortcut);
-
-            shortcut.VsShortcut = vsShortcut;
+            if (!HasSamePrimaryShortcuts(def) && hideSecondarySchemeIfDifferent)
+                intellijShortcut = GetFirstShortcutSequence(def.IdeaShortcuts);
             shortcut.IntellijShortcut = intellijShortcut;
         }
 
-        private ShortcutSequence GetWellKnownShortcutSequence(IActionDefWithId actionDef,
-                                                              out ShortcutSequence intellijShortcut)
-        {
-            intellijShortcut = null;
-
-            var s = vsShortcutFinder.GetOverriddenShortcut(actionDef);
-            if (s != null)
-                return GetShortcutSequence(s);
-
-            // The escape action doesn't override any VS command, but also doesn't have a shortcut associated
-            if (actionDef.ActionId == "Escape")
-                return GetShortcutSequence("Escape");
-
-            return null;
-        }
-
-        private static ShortcutSequence GetPrimaryShortcutSequence(string[] shortcuts)
+        private static ShortcutSequence GetFirstShortcutSequence(string[] shortcuts)
         {
             if (shortcuts == null || shortcuts.Length == 0)
                 return null;
@@ -123,5 +110,24 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             return false;
         }
 
+        private void SetVsOverriddenShortcuts(Shortcut shortcut, IActionDefWithId def)
+        {
+            // If we don't have any VS shortcuts, look to see if the action is an override of a
+            // VS command, and get the current key binding for that command
+            if (!shortcut.HasVsShortcuts)
+                shortcut.VsShortcut = GetShortcutSequence(vsShortcutFinder.GetOverriddenShortcut(def));
+        }
+
+        private void SetWellKnownShortcuts(Shortcut shortcut, IActionDefWithId def,
+            bool hideSecondarySchemeIfDifferent)
+        {
+            // The Escape action doesn't have a bound shortcut, or a VS override
+            if (def.ActionId == "Escape")
+            {
+                shortcut.VsShortcut = GetShortcutSequence("Escape");
+                if (!hideSecondarySchemeIfDifferent)
+                    shortcut.IntellijShortcut = shortcut.VsShortcut;
+            }
+        }
     }
 }
