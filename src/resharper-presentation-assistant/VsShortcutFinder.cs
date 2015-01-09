@@ -28,7 +28,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             this.threading = threading;
         }
 
-        public ActionShortcut GetOverriddenShortcut(IActionDefWithId def)
+        // This is the current key binding for the command being overridden by an action
+        // By definition, this is the VS key binding (because we're overriding an existing
+        // VS command and using its key bindings)
+        public ActionShortcut GetOverriddenVsShortcut(IActionDefWithId def)
         {
             if (dte == null || bindingsConverter == null || def.CommandId == null)
                 return null;
@@ -61,6 +64,36 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             }
 
             return null;
+        }
+
+        // When overriding a VS command, the VS key binding is whatever's set in VS.
+        // But we can also specify an IntelliJ binding. The only command that actually
+        // does this is ParameterInfo.Show
+        public ActionShortcut GetOverriddenIntellijShortcut(IActionDefWithId def)
+        {
+            if (dte == null || bindingsConverter == null || def.CommandId == null)
+                return null;
+
+            // Not sure if we're ever called on a non-UI thread, but better safe than sorry
+            if (!threading.Dispatcher.CheckAccess())
+                return null;
+
+            // Check it's an override
+            PartCatalogueAttribute overrideActionAttribute;
+            if (!TryGetAttribute<VsOverrideActionAttribute>(def, out overrideActionAttribute))
+                return null;
+
+            PartCatalogueAttribute actionAttribute;
+            if (!TryGetAttribute<ActionAttribute>(def, out actionAttribute))
+                return null;
+
+            string[] shortcuts;
+            if (!actionAttribute.TryGetProperty("IdeaShortcuts", out shortcuts) || shortcuts == null || shortcuts.Length <= 0)
+            {
+                return null;
+            }
+
+            return ShortcutUtil.ParseKeyboardShortcut(shortcuts[0]);
         }
 
         private static bool TryGetAttribute<T>(IActionDefWithId def, out PartCatalogueAttribute attribute)
