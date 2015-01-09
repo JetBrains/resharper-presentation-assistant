@@ -37,48 +37,63 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private void OnAction(ActionEvents.ActionEventArgs obj)
         {
-            // Would be nice to use IActionShortcuts here, but that only returns for a single scheme
-
             if (ActionIdBlacklist.IsBlacklisted(obj.ActionDef.ActionId))
                 return;
 
-            // TODO: Remove trailing ellipsis
-            var text = MnemonicStore.RemoveMnemonicMark(obj.ActionDef.Text);
-            text = string.IsNullOrEmpty(text) ? obj.ActionDef.ActionId : text;
+            UpdateMultiplier(obj.ActionDef);
+            var shortcut = GetShortcut(obj.ActionDef);
+            presentationAssistantWindowOwner.Show(shortcut);
+        }
 
+        private Shortcut GetShortcut(IActionDefWithId def)
+        {
+            var shortcut = new Shortcut
+            {
+                ActionId = def.ActionId,
+                Text = GetText(def),
+                Description = def.Description,
+                CurrentScheme = actionShortcuts.CurrentScheme,
+                Multiplier = multiplier
+            };
+
+            SetShortcuts(shortcut, def);
+            return shortcut;
+        }
+
+        private void UpdateMultiplier(IActionDefWithId def)
+        {
             var now = DateTime.UtcNow;
-            if (obj.ActionDef.ActionId != lastActionId)
+            if (def.ActionId != lastActionId)
                 multiplier = 1;
             else if (now - lastDisplayed < MultiplierTimeout)
                 multiplier++;
+            lastDisplayed = now;
+            lastActionId = def.ActionId;
+        }
 
-            var vsShortcut = GetPrimaryShortcutSequence(obj.ActionDef.VsShortcuts);
+        private static string GetText(IActionDefWithId def)
+        {
+            var text = MnemonicStore.RemoveMnemonicMark(def.Text);
+            text = string.IsNullOrEmpty(text) ? def.ActionId : text;
+            return text;
+        }
+
+        private void SetShortcuts(Shortcut shortcut, IActionDefWithId def)
+        {
+            var vsShortcut = GetPrimaryShortcutSequence(def.VsShortcuts);
             // TODO: Make this a setting? Only show secondary scheme if different?
             ShortcutSequence intellijShortcut = null;
-            if (!HasSamePrimaryShortcuts(obj.ActionDef))
-                intellijShortcut = GetPrimaryShortcutSequence(obj.ActionDef.IdeaShortcuts);
+            if (!HasSamePrimaryShortcuts(def))
+                intellijShortcut = GetPrimaryShortcutSequence(def.IdeaShortcuts);
 
             // There's no primary shortcut, try and find it by asking Visual Studio for the
             // shortcut of the overridden VS command (if there is one). Find any associated
             // intelliJ shortcut
             if (vsShortcut == null)
-                vsShortcut = GetWellKnownShortcutSequence(obj.ActionDef, out intellijShortcut);
+                vsShortcut = GetWellKnownShortcutSequence(def, out intellijShortcut);
 
-            var shortcut = new Shortcut
-            {
-                ActionId = obj.ActionDef.ActionId,
-                Text = text,
-                Description = obj.ActionDef.Description,
-                VsShortcut = vsShortcut,
-                IntellijShortcut = intellijShortcut,
-                CurrentScheme = actionShortcuts.CurrentScheme,
-                Multiplier = multiplier
-            };
-
-            presentationAssistantWindowOwner.Show(shortcut);
-
-            lastDisplayed = now;
-            lastActionId = obj.ActionDef.ActionId;
+            shortcut.VsShortcut = vsShortcut;
+            shortcut.IntellijShortcut = intellijShortcut;
         }
 
         private static bool HasSamePrimaryShortcuts(IActionDefWithId actionDef)
