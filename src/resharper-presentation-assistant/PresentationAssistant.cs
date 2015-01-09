@@ -7,6 +7,7 @@ using JetBrains.UI.ActionsRevised.Handlers;
 using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.UI.ActionsRevised.Shortcuts;
 using JetBrains.UI.PopupMenu.Impl;
+using JetBrains.Util;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
@@ -34,6 +35,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         {
             // Would be nice to use IActionShortcuts here, but that only returns for a single scheme
 
+            if (ActionIdBlacklist.IsBlacklisted(obj.ActionDef.ActionId))
+                return;
+
             // TODO: Remove trailing ellipsis
             var text = MnemonicStore.RemoveMnemonicMark(obj.ActionDef.Text);
             text = string.IsNullOrEmpty(text) ? obj.ActionDef.ActionId : text;
@@ -51,10 +55,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 intellijShortcut = GetPrimaryShortcutSequence(obj.ActionDef.IdeaShortcuts);
 
             if (intellijShortcut == null && vsShortcut == null)
-                vsShortcut = GetWellKnownShortcutSequence(obj.ActionDef);
+                vsShortcut = GetWellKnownShortcutSequence(obj.ActionDef, out intellijShortcut);
 
             var shortcut = new Shortcut
             {
+                ActionId = obj.ActionDef.ActionId,
                 Text = text,
                 Description = obj.ActionDef.Description,
                 VsShortcut = vsShortcut,
@@ -79,11 +84,50 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             return false;
         }
 
+        private static ShortcutSequence GetWellKnownShortcutSequence(IActionDefWithId actionDef, out ShortcutSequence intellijShortcut)
+        {
+            intellijShortcut = null;
+
+            // Some actions don't have defined shortcuts, as they're wired into VS below
+            // the level of keyboard commands (e.g. overriding intellisense's ctrl+space)
+            switch (actionDef.ActionId)
+            {
+                case "CompleteCodeBasic":
+                    return GetShortcutSequence("Control+Space");
+
+                case "Escape":
+                    return GetShortcutSequence("Escape");
+
+                // Standard VS commands that ReSharper overrides
+                // TODO: Look these up in VS? Via CommandID
+                // Some define their own keyboard shortcuts, though, e.g. ParameterInfo.Show
+                case "WordDeleteToStart":
+                    return GetShortcutSequence("Control+Backspace");
+
+                case "WordDeleteToEnd":
+                    return GetShortcutSequence("Control+Delete");
+
+                    // Only overridden in IntelliJ scheme, and we don't show IntelliJ if there's no VS shortcut
+                case "ParameterInfo.Show":
+                    intellijShortcut = GetShortcutSequence("Control+P");
+                    return GetShortcutSequence("Control+Shift+Space");
+
+                case "Bookmarks.ClearAll":
+                    return GetShortcutSequence("Control+K Control+L");
+            }
+            return null;
+        }
+
         private static ShortcutSequence GetPrimaryShortcutSequence(string[] shortcuts)
         {
             if (shortcuts == null || shortcuts.Length == 0)
                 return null;
 
+            return GetShortcutSequence(shortcuts[0]);
+        }
+
+        private static ShortcutSequence GetShortcutSequence(string shortcut)
+        {
             // ReSharper registers chords twice, once where the second char doesn't have modifiers
             // and once where the second char repeats the modifier of the first char.
             // E.g. Ctrl+R, R and Ctrl+R, Ctrl+R. This allows for flexibility in hitting that chord
@@ -92,7 +136,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             // SafeDelete (VS): Ctrl+R, D and Alt+Delete
             // Rename (IntelliJ): F2 and Shift+F6
             // These can be safely ignored, meaning we can just show the primary shortcut
-            var shortcut = shortcuts[0];
             var parsedShortcut = ShortcutUtil.ParseKeyboardShortcut(shortcut);
             if (parsedShortcut == null)
                 return null;

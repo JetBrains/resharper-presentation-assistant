@@ -93,7 +93,7 @@
     <Border BorderThickness="1" BorderBrush="Black" Padding="10 5 10 5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock>
-                <Bold><Run Text="{Binding Text, Mode=OneTime}" /></Bold>
+                <Bold><Run Text="{Binding Text, Mode=OneTime}" ToolTip="{Binding ActionId, Mode=OneTime}" /></Bold>
                 <TextBlock VerticalAlignment="Bottom" Visibility="{Binding HasShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
                     via
                     <InlineUIContainer BaselineAlignment="TextBottom">

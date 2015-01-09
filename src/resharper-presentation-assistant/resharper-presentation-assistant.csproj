@@ -132,6 +132,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionIdBlacklist.cs" />
     <Compile Include="BasePopupWindow.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="FadingWpfPopupWindow.cs" />
@@ -156,6 +157,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
