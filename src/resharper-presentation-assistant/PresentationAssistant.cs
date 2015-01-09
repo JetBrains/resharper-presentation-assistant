@@ -18,16 +18,20 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private readonly PresentationAssistantWindowOwner presentationAssistantWindowOwner;
         private readonly IActionShortcuts actionShortcuts;
+        private readonly VsShortcutFinder vsShortcutFinder;
 
         private DateTime lastDisplayed;
         private string lastActionId;
         private int multiplier;
 
         public PresentationAssistant(Lifetime lifetime, ActionEvents actionEvents,
-            PresentationAssistantWindowOwner presentationAssistantWindowOwner, IActionShortcuts actionShortcuts, IActionDefs defs)
+                                     PresentationAssistantWindowOwner presentationAssistantWindowOwner,
+                                     IActionShortcuts actionShortcuts, IActionDefs defs,
+                                     VsShortcutFinder vsShortcutFinder)
         {
             this.presentationAssistantWindowOwner = presentationAssistantWindowOwner;
             this.actionShortcuts = actionShortcuts;
+            this.vsShortcutFinder = vsShortcutFinder;
             actionEvents.AdviseExecuteAction(lifetime, OnAction);
         }
 
@@ -49,12 +53,15 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 multiplier++;
 
             var vsShortcut = GetPrimaryShortcutSequence(obj.ActionDef.VsShortcuts);
+            // TODO: Make this a setting? Only show secondary scheme if different?
             ShortcutSequence intellijShortcut = null;
-            // TODO: Make this a setting? Only show secondary scheme if different
             if (!HasSamePrimaryShortcuts(obj.ActionDef))
                 intellijShortcut = GetPrimaryShortcutSequence(obj.ActionDef.IdeaShortcuts);
 
-            if (intellijShortcut == null && vsShortcut == null)
+            // There's no primary shortcut, try and find it by asking Visual Studio for the
+            // shortcut of the overridden VS command (if there is one). Find any associated
+            // intelliJ shortcut
+            if (vsShortcut == null)
                 vsShortcut = GetWellKnownShortcutSequence(obj.ActionDef, out intellijShortcut);
 
             var shortcut = new Shortcut
@@ -84,37 +91,19 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             return false;
         }
 
-        private static ShortcutSequence GetWellKnownShortcutSequence(IActionDefWithId actionDef, out ShortcutSequence intellijShortcut)
+        private ShortcutSequence GetWellKnownShortcutSequence(IActionDefWithId actionDef,
+            out ShortcutSequence intellijShortcut)
         {
             intellijShortcut = null;
 
-            // Some actions don't have defined shortcuts, as they're wired into VS below
-            // the level of keyboard commands (e.g. overriding intellisense's ctrl+space)
-            switch (actionDef.ActionId)
-            {
-                case "CompleteCodeBasic":
-                    return GetShortcutSequence("Control+Space");
+            var s = vsShortcutFinder.GetOverriddenShortcut(actionDef);
+            if (s != null)
+                return GetShortcutSequence(s);
 
-                case "Escape":
-                    return GetShortcutSequence("Escape");
+            // The escape action doesn't override any VS command, but also doesn't have a shortcut associated
+            if (actionDef.ActionId == "Escape")
+                return GetShortcutSequence("Escape");
 
-                // Standard VS commands that ReSharper overrides
-                // TODO: Look these up in VS? Via CommandID
-                // Some define their own keyboard shortcuts, though, e.g. ParameterInfo.Show
-                case "WordDeleteToStart":
-                    return GetShortcutSequence("Control+Backspace");
-
-                case "WordDeleteToEnd":
-                    return GetShortcutSequence("Control+Delete");
-
-                    // Only overridden in IntelliJ scheme, and we don't show IntelliJ if there's no VS shortcut
-                case "ParameterInfo.Show":
-                    intellijShortcut = GetShortcutSequence("Control+P");
-                    return GetShortcutSequence("Control+Shift+Space");
-
-                case "Bookmarks.ClearAll":
-                    return GetShortcutSequence("Control+K Control+L");
-            }
             return null;
         }
 
@@ -140,6 +129,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (parsedShortcut == null)
                 return null;
 
+            return GetShortcutSequence(parsedShortcut);
+        }
+
+        private static ShortcutSequence GetShortcutSequence(ActionShortcut parsedShortcut)
+        {
             var details = new ShortcutDetails[parsedShortcut.KeyboardShortcuts.Length];
             for (int i = 0; i < parsedShortcut.KeyboardShortcuts.Length; i++)
             {
