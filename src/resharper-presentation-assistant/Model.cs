@@ -10,6 +10,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         }
 
         public ShortcutDetails[] Details { get; private set; }
+
+        public override string ToString()
+        {
+            if (Details == null)
+                return "undefined";
+            return string.Join(", ", Details.ToString());
+        }
     }
 
     public class ShortcutDetails
@@ -26,6 +33,16 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public bool HasAlt { get; private set; }
         public bool HasControl { get; private set; }
         public bool HasShift { get; private set; }
+
+        public override string ToString()
+        {
+            string value = string.Empty;
+            if (HasControl) value += "Control+";
+            if (HasShift) value += "Shift+";
+            if (HasAlt) value += "Alt+";
+            value += Key;
+            return value;
+        }
     }
 
     public class Shortcut

@@ -7,7 +7,6 @@ using JetBrains.Application.Parts;
 using JetBrains.Threading;
 using JetBrains.UI.ActionsRevised;
 using JetBrains.UI.ActionsRevised.Loader;
-using JetBrains.Util;
 using JetBrains.VsIntegration.Shell.ActionManagement;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant

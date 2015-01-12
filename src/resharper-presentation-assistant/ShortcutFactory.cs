@@ -4,7 +4,6 @@ using JetBrains.Application;
 using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.UI.ActionsRevised.Shortcuts;
 using JetBrains.UI.PopupMenu.Impl;
-using JetBrains.Util;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
@@ -56,12 +55,23 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private void SetGivenShortcuts(Shortcut shortcut, IActionDefWithId def, bool showSecondarySchemeIfSame)
         {
             shortcut.VsShortcut = GetFirstShortcutSequence(def.VsShortcuts);
+            shortcut.IntellijShortcut = GetFirstShortcutSequence(def.IdeaShortcuts);
 
-            // TODO: Make this a setting? Only show secondary scheme if different?
-            ShortcutSequence intellijShortcut = null;
-            if (!HasSamePrimaryShortcuts(def) || showSecondarySchemeIfSame)
-                intellijShortcut = GetFirstShortcutSequence(def.IdeaShortcuts);
-            shortcut.IntellijShortcut = intellijShortcut;
+            if (HasSameShortcuts(shortcut) && !showSecondarySchemeIfSame)
+                shortcut.IntellijShortcut = null;
+        }
+
+        private static bool HasSameShortcuts(Shortcut shortcut)
+        {
+            // We can't rely on the strings in IActionWithDefId as the modifiers can be in any order.
+            // So we use the string version of the parsed shortcuts
+            if (!shortcut.HasIntellijShortcuts && !shortcut.HasVsShortcuts)
+                return true;
+
+            if (shortcut.HasIntellijShortcuts != shortcut.HasVsShortcuts)
+                return false;
+
+            return shortcut.VsShortcut.ToString() == shortcut.IntellijShortcut.ToString();
         }
 
         private static ShortcutSequence GetFirstShortcutSequence(string[] shortcuts)
@@ -102,16 +112,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                     keyboardShortcut.Modifiers);
             }
             return new ShortcutSequence(details);
-        }
-
-        private static bool HasSamePrimaryShortcuts(IActionDefWithId actionDef)
-        {
-            var vsShortcuts = actionDef.VsShortcuts ?? EmptyArray<string>.Instance;
-            var ideaShortcuts = actionDef.IdeaShortcuts ?? EmptyArray<string>.Instance;
-            if (vsShortcuts.Length > 0 && ideaShortcuts.Length > 0)
-                return vsShortcuts[0] == ideaShortcuts[0];
-
-            return false;
         }
 
         private void SetVsOverriddenShortcuts(Shortcut shortcut, IActionDefWithId def)
