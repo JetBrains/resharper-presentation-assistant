@@ -40,6 +40,20 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             var text = MnemonicStore.RemoveMnemonicMark(def.Text);
             text = text.Trim(TrimCharacters);
             text = string.IsNullOrEmpty(text) ? def.ActionId : text;
+
+            switch (text)
+            {
+                    // TODO: Maybe "Expand Live Template/Next hotspot"? Based on context
+                case "TextControl.Tab":
+                    text = "Tab";
+                    break;
+
+                    // TODO: Maybe "Previous hotspot" if editing a Live Template
+                case "TabLeft":
+                    text = "Shift+Tab";
+                    break;
+            }
+
             return text;
         }
 
@@ -131,13 +145,21 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private void SetWellKnownShortcuts(Shortcut shortcut, IActionDefWithId def,
             bool showSecondarySchemeIfSame)
         {
-            // The Escape action doesn't have a bound shortcut, or a VS override
-            if (def.ActionId == "Escape")
+            switch (def.ActionId)
             {
-                shortcut.VsShortcut = GetShortcutSequence("Escape");
-                if (showSecondarySchemeIfSame)
-                    shortcut.IntellijShortcut = shortcut.VsShortcut;
+                    // The Escape action doesn't have a bound shortcut, or a VS override
+                case "Escape":
+                    shortcut.VsShortcut = GetShortcutSequence("Escape");
+                    break;
+
+                    // Only happens when we're tabbing around hotspots in Live Templates. Useful to show
+                case "TextControl.Tab":
+                    shortcut.VsShortcut = GetShortcutSequence("Tab");
+                    break;
             }
+
+            if (!shortcut.HasIntellijShortcuts && showSecondarySchemeIfSame)
+                shortcut.IntellijShortcut = shortcut.VsShortcut;
         }
     }
 }
