@@ -1,4 +1,5 @@
-﻿using JetBrains.ActionManagement;
+﻿using System.Linq;
+using JetBrains.ActionManagement;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
@@ -15,7 +16,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         {
             if (Details == null)
                 return "undefined";
-            return string.Join(", ", Details.ToString());
+            return string.Join(", ", Details.Select(d => d.ToString()));
         }
     }
 
