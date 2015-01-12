@@ -93,24 +93,13 @@
 
     <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static pa:PresentationAssistantThemeColor.PresentationAssistantWindowBorderBrushKey}}" Padding="10 5 10 5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <TextBlock>
-                <Bold><Run Text="{Binding Text, Mode=OneTime}" ToolTip="{Binding ActionId, Mode=OneTime}" /></Bold>
-                <TextBlock VerticalAlignment="Bottom" Visibility="{Binding HasShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    via
-                    <InlineUIContainer BaselineAlignment="TextBottom">
-                        <ContentControl Content="{Binding VsShortcut, Mode=OneTime}" />
-                    </InlineUIContainer>
-                    <TextBlock Visibility="{Binding HasIntellijShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="5,0,0,0">
-                        (<InlineUIContainer BaselineAlignment="TextBottom">
-                            <ContentControl Content="{Binding IntellijShortcut, Mode=OneTime}" />
-                        </InlineUIContainer>
-                        for IntelliJ)
-                    </TextBlock>
-                </TextBlock>
-                <TextBlock Visibility="{Binding HasMultiplier, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="3,0,0,0">
-                    &#x00d7;<Run Text="{Binding Multiplier}"></Run>
-                </TextBlock>
-            </TextBlock>
+            <!-- Don't mess with the formatting of the tags! -->
+            <TextBlock FontWeight="Bold" Text="{Binding Text, Mode=OneTime}" ToolTip="{Binding ActionId, Mode=OneTime}" />
+            <TextBlock Visibility="{Binding HasShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" xml:space="preserve"> via <InlineUIContainer BaselineAlignment="TextBottom">
+                    <ContentControl Content="{Binding VsShortcut, Mode=OneTime}" /></InlineUIContainer></TextBlock>
+            <TextBlock Visibility="{Binding HasIntellijShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" xml:space="preserve"> (<InlineUIContainer BaselineAlignment="TextBottom">
+                    <ContentControl Content="{Binding IntellijShortcut, Mode=OneTime}" /></InlineUIContainer> for IntelliJ)</TextBlock>
+            <TextBlock Visibility="{Binding HasMultiplier, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" xml:space="preserve"> &#x00d7;<Run Text="{Binding Multiplier, Mode=OneTime}"></Run></TextBlock>
         </StackPanel>
     </Border>
 </Window>
