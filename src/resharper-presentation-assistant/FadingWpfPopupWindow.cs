@@ -8,6 +8,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
     public class FadingWpfPopupWindow : WpfPopupWindow
     {
+        private static readonly TimeSpan Duration = TimeSpan.FromMilliseconds(200);
+
         private readonly Window window;
         private readonly double opacity;
 
@@ -26,15 +28,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             window.Opacity = 0;
             window.Visibility = Visibility.Visible;
 
-            var fadeTime = TimeSpan.FromMilliseconds(100);
-            var animation = new DoubleAnimation(opacity, fadeTime);
+            var animation = new DoubleAnimation(opacity, Duration);
             window.BeginAnimation(UIElement.OpacityProperty, animation);
         }
 
         protected override void HideWindowCore()
         {
-            var fadeTime = TimeSpan.FromMilliseconds(100);
-            var animation = new DoubleAnimation(0, fadeTime);
+            var animation = new DoubleAnimation(0, Duration);
 
             EventHandler handler = null;
             handler = (s, e) =>
