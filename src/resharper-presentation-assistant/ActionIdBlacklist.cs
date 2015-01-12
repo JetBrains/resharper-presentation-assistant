@@ -13,6 +13,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             "TextControl.Delete",
             "TextControl.Cut",
             "TextControl.Paste",
+
+            // Used when code completion window is visible
+            "TextControl.Up", "TextControl.Down",
+            "TextControl.PageUp", "TextControl.PageDown",
+
+            // If camel humps are enabled in the editor
             "WordPrev",
             "WordPrevExtend",
             "WordNext",
