@@ -9,7 +9,8 @@
         ShowActivated="False"
         ShowInTaskbar="False"
         Focusable="False"
-        Background="#FF497549"
+        Background="{DynamicResource {x:Static pa:PresentationAssistantThemeColor.PresentationAssistantWindowBackgroundBrushKey}}"
+        Foreground="{DynamicResource {x:Static pa:PresentationAssistantThemeColor.PresentationAssistantWindowForegroundBrushKey}}"
         FontSize="24"
         FontFamily="Segoe UI"
         WindowStyle="None"
@@ -18,7 +19,7 @@
         AllowsTransparency="True"
         Opacity="0.8"
         d:DataContext="{x:Static pa:SampleData.MultiplierShortcut}">
-    
+
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         
@@ -90,7 +91,7 @@
   <!-- Dark theme colours: Black border + #FF497549 background-->
   <!-- Light theme colours: border? + #FFBAEEBA background -->
 
-    <Border BorderThickness="1" BorderBrush="Black" Padding="10 5 10 5">
+    <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static pa:PresentationAssistantThemeColor.PresentationAssistantWindowBorderBrushKey}}" Padding="10 5 10 5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock>
                 <Bold><Run Text="{Binding Text, Mode=OneTime}" ToolTip="{Binding ActionId, Mode=OneTime}" /></Bold>

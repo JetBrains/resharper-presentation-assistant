@@ -4,6 +4,7 @@ using JetBrains.DataFlow;
 using JetBrains.Threading;
 using JetBrains.UI.Application;
 using JetBrains.UI.PopupWindowManager;
+using JetBrains.UI.Theming;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
@@ -15,17 +16,19 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly IThreading threading;
         private readonly PresentationAssistantPopupWindowContext context;
         private readonly PopupWindowManager popupWindowManager;
+        private readonly ITheming theming;
         private readonly SequentialLifetimes windowVisibilityLifetime;
         private readonly LifetimeDefinition windowLifetimeDefinition;
         private PresentationAssistantWindow window;
         private IPopupWindow popupWindow;
 
         public PresentationAssistantWindowOwner(Lifetime lifetime, IThreading threading,
-            PresentationAssistantPopupWindowContext context, PopupWindowManager popupWindowManager)
+            PresentationAssistantPopupWindowContext context, PopupWindowManager popupWindowManager, ITheming theming)
         {
             this.threading = threading;
             this.context = context;
             this.popupWindowManager = popupWindowManager;
+            this.theming = theming;
 
             // TODO: Tie this to an enable/disable option
             // This is the lifetime of the actual window, when it's terminated, the window is
@@ -42,6 +45,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (window == null)
             {
                 window = new PresentationAssistantWindow();
+                theming.PopulateResourceDictionary(windowLifetimeDefinition.Lifetime, window.Resources);
                 window.SetOwner(context.MainWindow.Handle);
                 popupWindow = new FadingWpfPopupWindow(windowLifetimeDefinition, context, context.Mutex,
                     popupWindowManager, window, opacity: 0.8);
