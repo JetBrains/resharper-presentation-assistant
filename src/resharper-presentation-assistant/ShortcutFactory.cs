@@ -1,4 +1,3 @@
-using System;
 using JetBrains.ActionManagement;
 using JetBrains.Application;
 using JetBrains.UI.ActionsRevised.Loader;
@@ -10,6 +9,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     [ShellComponent]
     public class ShortcutFactory
     {
+        private static readonly char[] TrimCharacters = {'.', '\u2026'};
+
         private readonly IActionShortcuts actionShortcuts;
         private readonly VsShortcutFinder vsShortcutFinder;
 
@@ -36,9 +37,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private static string GetText(IActionDefWithId def)
         {
-            // TODO: Remove trailing ellipsis
             var text = MnemonicStore.RemoveMnemonicMark(def.Text);
-            text = String.IsNullOrEmpty(text) ? def.ActionId : text;
+            text = text.Trim(TrimCharacters);
+            text = string.IsNullOrEmpty(text) ? def.ActionId : text;
             return text;
         }
 
