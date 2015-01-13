@@ -86,13 +86,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (!TryGetAttribute<ActionAttribute>(def, out actionAttribute))
                 return null;
 
-            string[] shortcuts;
+            object[] shortcuts; // I don't know why this is object[] ActionAttribute.IdeaShortcuts is string[]
             if (!actionAttribute.TryGetProperty("IdeaShortcuts", out shortcuts) || shortcuts == null || shortcuts.Length <= 0)
             {
                 return null;
             }
 
-            return ShortcutUtil.ParseKeyboardShortcut(shortcuts[0]);
+            return ShortcutUtil.ParseKeyboardShortcut(shortcuts[0] as string);
         }
 
         private static bool TryGetAttribute<T>(IActionDefWithId def, out PartCatalogueAttribute attribute)
