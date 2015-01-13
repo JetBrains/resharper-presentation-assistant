@@ -1,5 +1,6 @@
 using JetBrains.ActionManagement;
 using JetBrains.Application;
+using JetBrains.ReSharper.Feature.Services.Util;
 using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.UI.ActionsRevised.Shortcuts;
 using JetBrains.UI.PopupMenu.Impl;
@@ -13,11 +14,14 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private readonly IActionShortcuts actionShortcuts;
         private readonly VsShortcutFinder vsShortcutFinder;
+        private readonly ActionPresentationHelper actionPresentationHelper;
 
-        public ShortcutFactory(IActionShortcuts actionShortcuts, VsShortcutFinder vsShortcutFinder)
+        public ShortcutFactory(IActionShortcuts actionShortcuts, IActionDefs defs,
+                               VsShortcutFinder vsShortcutFinder, ActionPresentationHelper actionPresentationHelper)
         {
             this.actionShortcuts = actionShortcuts;
             this.vsShortcutFinder = vsShortcutFinder;
+            this.actionPresentationHelper = actionPresentationHelper;
         }
 
         public Shortcut Create(IActionDefWithId def, int multiplier)
@@ -26,6 +30,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             {
                 ActionId = def.ActionId,
                 Text = GetText(def),
+                Path = GetPath(def),
                 Description = def.Description,
                 CurrentScheme = actionShortcuts.CurrentScheme,
                 Multiplier = multiplier
@@ -35,10 +40,17 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             return shortcut;
         }
 
-        private static string GetText(IActionDefWithId def)
+        private string GetPath(IActionDefWithId def)
         {
-            var text = MnemonicStore.RemoveMnemonicMark(def.Text);
-            text = text.Trim(TrimCharacters);
+            var path = actionPresentationHelper.GetPathPresentationToRoot(def);
+            if (!string.IsNullOrEmpty(path))
+                return path + " \u2192 ";
+            return string.Empty;
+        }
+
+        private string GetText(IActionDefWithId def)
+        {
+            var text = MnemonicStore.RemoveMnemonicMark(def.Text).Trim(TrimCharacters);
             text = string.IsNullOrEmpty(text) ? def.ActionId : text;
 
             switch (text)
@@ -63,7 +75,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             const bool showSecondarySchemeIfSame = false;
 
             SetGivenShortcuts(shortcut, def, showSecondarySchemeIfSame);
-            SetVsOverriddenShortcuts(shortcut, def);
+            SetVsOverriddenShortcuts(shortcut, def, showSecondarySchemeIfSame);
             SetWellKnownShortcuts(shortcut, def, showSecondarySchemeIfSame);
         }
 
@@ -129,7 +141,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             return new ShortcutSequence(details);
         }
 
-        private void SetVsOverriddenShortcuts(Shortcut shortcut, IActionDefWithId def)
+        private void SetVsOverriddenShortcuts(Shortcut shortcut, IActionDefWithId def, bool showSecondarySchemeIfSame)
         {
             // If we don't have any VS shortcuts, look to see if the action is an override of a
             // VS command, and get the current key binding for that command
@@ -140,6 +152,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             // specify an IntelliJ shortcut
             if (!shortcut.HasIntellijShortcuts)
                 shortcut.IntellijShortcut = GetShortcutSequence(vsShortcutFinder.GetOverriddenIntellijShortcut(def));
+
+            if (HasSameShortcuts(shortcut) && !showSecondarySchemeIfSame)
+                shortcut.IntellijShortcut = null;
         }
 
         private void SetWellKnownShortcuts(Shortcut shortcut, IActionDefWithId def,

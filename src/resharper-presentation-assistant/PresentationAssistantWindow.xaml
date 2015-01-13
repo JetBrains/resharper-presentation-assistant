@@ -94,6 +94,7 @@
     <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static pa:PresentationAssistantThemeColor.PresentationAssistantWindowBorderBrushKey}}" Padding="10 5 10 5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- Don't mess with the formatting of the tags! -->
+            <TextBlock Text="{Binding Path, Mode=OneTime}" />
             <TextBlock FontWeight="Bold" Text="{Binding Text, Mode=OneTime}" ToolTip="{Binding ActionId, Mode=OneTime}" />
             <TextBlock Visibility="{Binding HasShortcuts, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" xml:space="preserve"> via <InlineUIContainer BaselineAlignment="TextBottom">
                     <ContentControl Content="{Binding VsShortcut, Mode=OneTime}" /></InlineUIContainer></TextBlock>
