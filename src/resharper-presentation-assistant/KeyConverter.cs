@@ -26,8 +26,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             {Keys.D7, "7"},
             {Keys.D8, "8"},
             {Keys.D9, "9"},
-            {Keys.Next, Keys.PageDown.ToString()},
-            {Keys.Prior, Keys.PageUp.ToString()},
+            {Keys.Next, "Page Down"},   // Synonym for Keys.PageDown, gets converted to "Next"
+            {Keys.Prior, "Page Up"},    // Synonym for Keys.PageUp
             {Keys.OemSemicolon, ";"},
             {Keys.Oemplus, "+"},
             {Keys.Oemcomma, ","},
