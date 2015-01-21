@@ -191,11 +191,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (!shortcut.HasVsShortcuts)
                 shortcut.VsShortcut = GetShortcutSequence(vsShortcutFinder.GetOverriddenVsShortcut(def));
 
-            // An action that overrides a VS command uses the VS keybinding, but it can also
-            // specify an IntelliJ shortcut
-            if (!shortcut.HasIntellijShortcuts)
-                shortcut.IntellijShortcut = GetShortcutSequence(vsShortcutFinder.GetOverriddenIntellijShortcut(def));
-
             if (HasSameShortcuts(shortcut) && !showSecondarySchemeIfSame)
                 shortcut.IntellijShortcut = null;
         }

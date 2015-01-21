@@ -1,13 +1,11 @@
-using System;
 using System.Linq;
 using EnvDTE;
 using JetBrains.ActionManagement;
 using JetBrains.Application;
-using JetBrains.Application.Parts;
 using JetBrains.Threading;
-using JetBrains.UI.ActionsRevised;
 using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.VsIntegration.Shell.ActionManagement;
+using JetBrains.VsIntegration.Shell.Actions.Revised;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
@@ -17,14 +15,16 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly DTE dte;
         private readonly VsBindingsConverter bindingsConverter;
         private readonly IThreading threading;
+        private readonly IVsActionsDefs vsActionDefs;
 
         // TODO: Optional components for when VS isn't available
         public VsShortcutFinder(DTE optionalDte, VsBindingsConverter optionalBindingsConverter, 
-                                IThreading threading)
+                                IThreading threading, IVsActionsDefs vsActionDefs)
         {
             dte = optionalDte;
             bindingsConverter = optionalBindingsConverter;
             this.threading = threading;
+            this.vsActionDefs = vsActionDefs;
         }
 
         // This is the current key binding for the command being overridden by an action
@@ -32,23 +32,20 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         // VS command and using its key bindings)
         public ActionShortcut GetOverriddenVsShortcut(IActionDefWithId def)
         {
-            if (dte == null || bindingsConverter == null || def.CommandId == null)
+            if (dte == null || bindingsConverter == null)
                 return null;
 
             // Not sure if we're ever called on a non-UI thread, but better safe than sorry
             if (!threading.Dispatcher.CheckAccess())
                 return null;
 
-            PartCatalogueAttribute attribute;
-            if (!TryGetAttribute<VsOverrideActionAttribute>(def, out attribute))
+            // def.CommandId is the command ID of the ReSharper action. We want the command ID
+            // of the VS command it's overriding
+            var commandId = vsActionDefs.TryGetOverriddenCommandIds(def).FirstOrDefault();
+            if (commandId == null)
                 return null;
 
-            string commandId;
-            if (!TryGetConstructorValue(attribute, 0, out commandId))
-                return null;
-
-            var cid = VsCommandIDConverter.ConvertFromInvariantString(commandId);
-            var command = dte.Commands.Item(cid.Guid, cid.ID);
+            var command = VsCommandHelpers.TryGetVsCommandAutomationObject(commandId, dte);
             if (command == null)
                 return null;
 
@@ -63,71 +60,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             }
 
             return null;
-        }
-
-        // When overriding a VS command, the VS key binding is whatever's set in VS.
-        // But we can also specify an IntelliJ binding. The only command that actually
-        // does this is ParameterInfo.Show
-        public ActionShortcut GetOverriddenIntellijShortcut(IActionDefWithId def)
-        {
-            if (dte == null || bindingsConverter == null || def.CommandId == null)
-                return null;
-
-            // Not sure if we're ever called on a non-UI thread, but better safe than sorry
-            if (!threading.Dispatcher.CheckAccess())
-                return null;
-
-            // Check it's an override
-            PartCatalogueAttribute overrideActionAttribute;
-            if (!TryGetAttribute<VsOverrideActionAttribute>(def, out overrideActionAttribute))
-                return null;
-
-            PartCatalogueAttribute actionAttribute;
-            if (!TryGetAttribute<ActionAttribute>(def, out actionAttribute))
-                return null;
-
-            object[] shortcuts; // I don't know why this is object[] ActionAttribute.IdeaShortcuts is string[]
-            if (!actionAttribute.TryGetProperty("IdeaShortcuts", out shortcuts) || shortcuts == null || shortcuts.Length <= 0)
-            {
-                return null;
-            }
-
-            return ShortcutUtil.ParseKeyboardShortcut(shortcuts[0] as string);
-        }
-
-        private static bool TryGetAttribute<T>(IActionDefWithId def, out PartCatalogueAttribute attribute)
-            where T : Attribute
-        {
-            attribute = null;
-
-            var attributes = def.Part.GetAttributes<T>();
-            if (attributes != null)
-            {
-                attribute = attributes.FirstOrDefault();
-                if (attribute != null)
-                    return true;
-            }
-            return false;
-        }
-
-        private bool TryGetConstructorValue<T>(PartCatalogueAttribute attribute, int index, out T ctorValue)
-            where T : class
-        {
-            ctorValue = default(T);
-
-
-            var properties = attribute.GetProperties();
-            if (properties == null || index >= properties.Count)
-                return false;
-
-            var property = properties.Skip(index - 1).Take(1).FirstOrDefault();
-            if (property != null)
-            {
-                ctorValue = property.Value as T;
-                if (ctorValue != null)
-                    return true;
-            }
-            return false;
         }
 
         private string GetFirstBinding(object o)

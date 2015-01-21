@@ -43,6 +43,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public void TrackActivity(string activityGroup, string activityId, int count = 1)
         {
             // TODO: Track activities in VsAction activityGroup
+            if (activityGroup == "VsAction")
+            {
+                // Get a shortcut, UpdateMultiplier, call presentationAssistantWindowOwner.Show
+                // TODO: Figure out path for item. Look at what the quick search is doing?
+            }
         }
 
         private void OnAction(IActionDefWithId def)
@@ -50,20 +55,20 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (ActionIdBlacklist.IsBlacklisted(def.ActionId))
                 return;
 
-            UpdateMultiplier(def);
+            UpdateMultiplier(def.ActionId);
             var shortcut = shortcutFactory.Create(def, multiplier);
             presentationAssistantWindowOwner.Show(shortcut);
         }
 
-        private void UpdateMultiplier(IActionDefWithId def)
+        private void UpdateMultiplier(string actionId)
         {
             var now = DateTime.UtcNow;
-            if (def.ActionId == lastActionId && (now - lastDisplayed) < MultiplierTimeout)
+            if (actionId == lastActionId && (now - lastDisplayed) < MultiplierTimeout)
                 multiplier++;
             else
                 multiplier = 1;
             lastDisplayed = now;
-            lastActionId = def.ActionId;
+            lastActionId = actionId;
         }
     }
 }
