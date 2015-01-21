@@ -3,10 +3,10 @@
   <metadata>
     <id>JetBrains.PresentationAssistant</id>
     <title>Presentation Assistant</title>
-    <version>1.0.0-alpha-20150105</version>
+    <version>1.0.0-alpha-20150121</version>
     <authors>JetBrains</authors>
     <owners>JetBrains</owners>
-    <description></description>
+    <description>Shows the name and keyboard shortcuts of invoked actions.</description>
     <summary>Shows the name and keyboard shortcuts of invoked actions.</summary>
     <projectUrl>https://github.com/JetBrains/resharper-presentation-assistant</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/JetBrains/resharper-presentaton-assistant/license.txt</licenseUrl>
