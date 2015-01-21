@@ -41,10 +41,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private void UpdateMultiplier(IActionDefWithId def)
         {
             var now = DateTime.UtcNow;
-            if (def.ActionId != lastActionId)
-                multiplier = 1;
-            else if (now - lastDisplayed < MultiplierTimeout)
+            if (def.ActionId == lastActionId && (now - lastDisplayed) < MultiplierTimeout)
                 multiplier++;
+            else
+                multiplier = 1;
             lastDisplayed = now;
             lastActionId = def.ActionId;
         }
