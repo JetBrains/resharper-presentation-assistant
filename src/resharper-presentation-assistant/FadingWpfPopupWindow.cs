@@ -8,7 +8,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
     public class FadingWpfPopupWindow : WpfPopupWindow
     {
-        private static readonly TimeSpan Duration = TimeSpan.FromMilliseconds(200);
+        private static readonly TimeSpan Duration = TimeSpan.FromMilliseconds(300);
 
         private readonly Window window;
         private readonly double opacity;
