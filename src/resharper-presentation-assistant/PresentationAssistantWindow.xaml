@@ -17,6 +17,7 @@
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
         AllowsTransparency="True"
+        Topmost="True"
         Opacity="0.8"
         d:DataContext="{x:Static pa:SampleData.MultiplierShortcut}">
 

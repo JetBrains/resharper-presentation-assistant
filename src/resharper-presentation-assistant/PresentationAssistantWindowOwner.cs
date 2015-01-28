@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Windows.Interop;
 using JetBrains.Application;
 using JetBrains.DataFlow;
+using JetBrains.Interop.WinApi;
 using JetBrains.Threading;
-using JetBrains.UI.Application;
 using JetBrains.UI.PopupWindowManager;
 using JetBrains.UI.Theming;
 
@@ -12,6 +13,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     public class PresentationAssistantWindowOwner
     {
         private static readonly TimeSpan VisibleTimeSpan = TimeSpan.FromSeconds(4);
+        private static readonly TimeSpan TopmostTimeSpan = TimeSpan.FromMilliseconds(200);
 
         private readonly IThreading threading;
         private readonly PresentationAssistantPopupWindowContext context;
@@ -20,6 +22,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly SequentialLifetimes windowVisibilityLifetime;
         private readonly LifetimeDefinition windowLifetimeDefinition;
         private PresentationAssistantWindow window;
+        private WindowInteropHelper windowInteropHelper;
         private IPopupWindow popupWindow;
 
         public PresentationAssistantWindowOwner(Lifetime lifetime, IThreading threading,
@@ -45,8 +48,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (window == null)
             {
                 window = new PresentationAssistantWindow();
+                windowInteropHelper = new WindowInteropHelper(window) {Owner = context.MainWindow.Handle};
+
                 theming.PopulateResourceDictionary(windowLifetimeDefinition.Lifetime, window.Resources);
-                window.SetOwner(context.MainWindow.Handle);
                 popupWindow = new FadingWpfPopupWindow(windowLifetimeDefinition, context, context.Mutex,
                     popupWindowManager, window, opacity: 0.8);
             }
@@ -56,9 +60,21 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 window.SetShortcut(shortcut);
                 popupWindow.ShowWindow();
 
-                threading.TimedActions.Queue(l, "PresentationAssistantWindow", () => popupWindow.HideWindow(),
+                // HACK! We need to keep our window on top of everything (even on top of JetPopupMenu) and
+                // there's no way of influencing the layout of other popups, so we have to rather crudely
+                // force ourselves topmost
+                threading.TimedActions.Queue(l, "PresentationAssistantWindow::Topmost", () => MakeTopmost(windowInteropHelper.Handle),
+                    TopmostTimeSpan, TimedActionsHost.Recurrence.Recurring, Rgc.Invariant);
+
+                threading.TimedActions.Queue(l, "PresentationAssistantWindow::HideWindow", () => popupWindow.HideWindow(),
                     VisibleTimeSpan, TimedActionsHost.Recurrence.OneTime, Rgc.Invariant);
             });
+        }
+
+        private static void MakeTopmost(IntPtr handle)
+        {
+            Win32Declarations.SetWindowPos(handle, (IntPtr)HwndSpecial.HWND_TOP, 0, 0, 0, 0,
+                SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE);
         }
     }
 }
