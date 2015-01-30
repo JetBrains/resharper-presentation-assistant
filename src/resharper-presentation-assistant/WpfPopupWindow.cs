@@ -98,11 +98,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         protected override void HideWindowCore()
         {
             window.Hide();
+            FireClosed();
         }
 
         protected override void CloseWindowCore()
         {
             window.Close();
+            FireClosed();
         }
 
         protected override void FocusWindow()

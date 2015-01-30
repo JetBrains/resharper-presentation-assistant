@@ -19,11 +19,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly PresentationAssistantPopupWindowContext context;
         private readonly PopupWindowManager popupWindowManager;
         private readonly ITheming theming;
-        private readonly SequentialLifetimes windowVisibilityLifetime;
-        private readonly LifetimeDefinition windowLifetimeDefinition;
-        private PresentationAssistantWindow window;
-        private WindowInteropHelper windowInteropHelper;
-        private IPopupWindow popupWindow;
+        private Action<Shortcut> showAction;
 
         public PresentationAssistantWindowOwner(Lifetime lifetime, IThreading threading,
             PresentationAssistantPopupWindowContext context, PopupWindowManager popupWindowManager, ITheming theming)
@@ -33,41 +29,60 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             this.popupWindowManager = popupWindowManager;
             this.theming = theming;
 
-            // TODO: Tie this to an enable/disable option
-            // This is the lifetime of the actual window, when it's terminated, the window is
-            // properly closed. When the window is closed, the lifetime is terminated
-            windowLifetimeDefinition = Lifetimes.Define(lifetime, "PresentationAssistant");
-
-            // Used to queue hiding the window with a timer. If the lifetime is terminated (i.e. a new
-            // window is shown) the hide is removed from the queue
-            windowVisibilityLifetime = new SequentialLifetimes(windowLifetimeDefinition.Lifetime);
+            Enabled = new Property<bool>(lifetime, "PresentationAssistantWindow::Enabled");
+            Enabled.WhenTrue(lifetime, EnableShortcuts);
         }
+
+        public IProperty<bool> Enabled { get; private set; }
 
         public void Show(Shortcut shortcut)
         {
-            if (window == null)
-            {
-                window = new PresentationAssistantWindow();
-                windowInteropHelper = new WindowInteropHelper(window) {Owner = context.MainWindow.Handle};
+            showAction(shortcut);
+        }
 
-                theming.PopulateResourceDictionary(windowLifetimeDefinition.Lifetime, window.Resources);
-                popupWindow = new FadingWpfPopupWindow(windowLifetimeDefinition, context, context.Mutex,
-                    popupWindowManager, window, opacity: 0.8);
-            }
+        private void EnableShortcuts(Lifetime enabledLifetime)
+        {
+            var popupWindowLifetimeDefinition = Lifetimes.Define(enabledLifetime, "PresentationAssistant::PopupWindow");
 
-            windowVisibilityLifetime.DefineNext((ld, l) =>
+            var window = new PresentationAssistantWindow();
+            var windowInteropHelper = new WindowInteropHelper(window) { Owner = context.MainWindow.Handle };
+
+            theming.PopulateResourceDictionary(popupWindowLifetimeDefinition, window.Resources);
+
+            var popupWindow = new FadingWpfPopupWindow(popupWindowLifetimeDefinition, context, context.Mutex,
+                popupWindowManager, window, opacity: 0.8);
+
+            var visibilityLifetimes = new SequentialLifetimes(popupWindowLifetimeDefinition);
+
+            showAction = shortcut =>
             {
                 window.SetShortcut(shortcut);
                 popupWindow.ShowWindow();
 
-                // HACK! We need to keep our window on top of everything (even on top of JetPopupMenu) and
-                // there's no way of influencing the layout of other popups, so we have to rather crudely
-                // force ourselves topmost
-                threading.TimedActions.Queue(l, "PresentationAssistantWindow::Topmost", () => MakeTopmost(windowInteropHelper.Handle),
-                    TopmostTimeSpan, TimedActionsHost.Recurrence.Recurring, Rgc.Invariant);
+                visibilityLifetimes.Next(visibleLifetime =>
+                {
+                    // HACK! We need to keep our window on top of everything (even on top of JetPopupMenu) and
+                    // there's no way of influencing the layout of other popups, so we have to rather crudely
+                    // force ourselves topmost
+                    // Queue this on the visibility lifetime
+                    threading.TimedActions.Queue(visibleLifetime, "PresentationAssistantWindow::Topmost",
+                        () => MakeTopmost(windowInteropHelper.Handle), TopmostTimeSpan,
+                        TimedActionsHost.Recurrence.Recurring, Rgc.Invariant);
 
-                threading.TimedActions.Queue(l, "PresentationAssistantWindow::HideWindow", () => popupWindow.HideWindow(),
-                    VisibleTimeSpan, TimedActionsHost.Recurrence.OneTime, Rgc.Invariant);
+                    // Hide the window after a timespan, and queue it on the visible sequential lifetime so
+                    // that the timer is cancelled when we want to show a new shortcut. Don't hide the window
+                    // by attaching it to the sequential lifetime, as that will cause the window to hide when
+                    // we need to show a new shortcut. But, make sure we do terminate the lifetime so that
+                    // the topmost timer hack is stopped when this window is not visible
+                    threading.TimedActions.Queue(visibleLifetime, "PresentationAssistantWindow::HideWindow",
+                        () => popupWindow.HideWindow(), VisibleTimeSpan,
+                        TimedActionsHost.Recurrence.OneTime, Rgc.Invariant);
+                });
+            };
+
+            enabledLifetime.AddAction(() =>
+            {
+                showAction = _ => { };
             });
         }
 

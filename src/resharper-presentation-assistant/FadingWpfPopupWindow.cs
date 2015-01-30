@@ -40,6 +40,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             handler = (s, e) =>
             {
                 window.Hide();
+                FireClosed();
                 animation.Completed -= handler;
             };
             animation.Completed += handler;

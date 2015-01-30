@@ -27,7 +27,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             this.defs = defs;
             this.presentationAssistantWindowOwner = presentationAssistantWindowOwner;
             this.shortcutFactory = shortcutFactory;
+
+            Enabled = new Property<bool>(lifetime, "PresentationAssistant::Enabled");
+            Enabled.FlowInto(lifetime, presentationAssistantWindowOwner.Enabled);
         }
+
+        public Property<bool> Enabled { get; private set; }
 
         // Implementing IActivityTracking is better than subscribing to ActionEvents, as
         // extensible workflow based actions (Refactor This, Navigate To, Generate, etc.)
@@ -35,6 +40,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         // get reported by ActionEvents
         public void TrackAction(string actionId)
         {
+            if (!Enabled.Value)
+                return;
+
+            if (ActionIdBlacklist.IsBlacklisted(actionId))
+                return;
+
             var def = defs.TryGetActionDefById(actionId);
             if (def != null)
                 OnAction(def);
@@ -42,6 +53,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         public void TrackActivity(string activityGroup, string activityId, int count = 1)
         {
+            if (!Enabled.Value)
+                return;
+
             // TODO: Track activities in VsAction activityGroup
             if (activityGroup == "VsAction")
             {

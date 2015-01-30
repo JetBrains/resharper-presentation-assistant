@@ -214,6 +214,7 @@
     <Compile Include="PresentationAssistantWindowOwner.cs" />
     <Compile Include="PresentationAssistantThemeColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PresentationAssistantAction.cs" />
     <Compile Include="ShortcutFactory.cs" />
     <Compile Include="VisualStudioPane.cs" />
     <Compile Include="VsShortcutFinder.cs" />

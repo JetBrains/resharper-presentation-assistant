@@ -37,9 +37,20 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
             lifetime.AddAction(() =>
             {
-                if (Visible)
-                    HideWindow();
-                CloseWindowCore();
+                if (!Visible)
+                {
+                    CloseWindowCore();
+                    return;
+                }
+
+                EventHandler handle = null;
+                handle = (sender, args) =>
+                {
+                    CloseWindowCore();
+                    Closed -= handle;
+                };
+                Closed += handle;
+                HideWindow();
             });
         }
 
