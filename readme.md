@@ -16,3 +16,4 @@ Any suggestions? Found a bug? Please [add an issue](https://github.com/JetBrains
 
 You can download the plugin via the Extension Manager. Once installed, you can enable and disable it by selecting the "Presentation Assistant" item in the ReSharper &rarr; Tools menu.
 
+![Enable Presentation Assistant via the Tools menu](docs/tools_menu.png)
