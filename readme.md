@@ -7,6 +7,7 @@ Presentation Assistant is an extension for ReSharper 9.0 that will display the k
 ## Features
 
 * Displays invoked ReSharper actions, showing any shortcuts. Defaults to Visual Studio keymap, showing the IntelliJ shortcut if it's different. (Visual Studio commands will be added in a future version.)
+* Displays shortcuts for Visual Studio commands where possible. This means, displays the command and shortcuts if it's visible in the main menu. Any other commands (toolbar buttons in tool windows, for example) are not currently shown.
 * Shows multiple invocations of a shortcut.
 * Supports Visual Studio's Light and Dark themes.
 
