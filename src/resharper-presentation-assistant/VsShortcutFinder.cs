@@ -49,6 +49,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (command == null)
                 return null;
 
+            return GetVsShortcut(command);
+        }
+
+        public ActionShortcut GetVsShortcut(Command command)
+        {
             var binding = GetFirstBinding(command.Bindings);
             if (binding != null)
             {
@@ -58,7 +63,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 if (actionShortcut.Second != null)
                     return actionShortcut.Second;
             }
-
             return null;
         }
 

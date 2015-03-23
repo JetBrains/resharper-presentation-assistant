@@ -12,7 +12,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     {
         private static readonly TimeSpan MultiplierTimeout = TimeSpan.FromSeconds(10);
 
-        private readonly IActionDefs defs;
+        private readonly ActionFinder actionFinder;
         private readonly PresentationAssistantWindowOwner presentationAssistantWindowOwner;
         private readonly ShortcutFactory shortcutFactory;
 
@@ -20,11 +20,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private string lastActionId;
         private int multiplier;
 
-        public PresentationAssistant(Lifetime lifetime, IActionDefs defs,
+        public PresentationAssistant(Lifetime lifetime, ActionFinder actionFinder,
                                      PresentationAssistantWindowOwner presentationAssistantWindowOwner,
                                      ShortcutFactory shortcutFactory)
         {
-            this.defs = defs;
+            this.actionFinder = actionFinder;
             this.presentationAssistantWindowOwner = presentationAssistantWindowOwner;
             this.shortcutFactory = shortcutFactory;
 
@@ -43,12 +43,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (!Enabled.Value)
                 return;
 
-            if (ActionIdBlacklist.IsBlacklisted(actionId))
-                return;
-
-            var def = defs.TryGetActionDefById(actionId);
-            if (def != null)
-                OnAction(def);
+            OnAction(actionId);
         }
 
         public void TrackActivity(string activityGroup, string activityId, int count = 1)
@@ -56,19 +51,24 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (!Enabled.Value)
                 return;
 
-            // TODO: Track activities in VsAction activityGroup
             if (activityGroup == "VsAction")
-            {
-                // Get a shortcut, UpdateMultiplier, call presentationAssistantWindowOwner.Show
-                // TODO: Figure out path for item. Look at what the quick search is doing?
-            }
+                OnAction(activityId);
+        }
+
+        private void OnAction(string actionId)
+        {
+            if (ActionIdBlacklist.IsBlacklisted(actionId))
+                return;
+
+            var def = actionFinder.Find(actionId);
+            if (def == null)
+                return;
+
+            OnAction(def);
         }
 
         private void OnAction(IActionDefWithId def)
         {
-            if (ActionIdBlacklist.IsBlacklisted(def.ActionId))
-                return;
-
             UpdateMultiplier(def.ActionId);
             var shortcut = shortcutFactory.Create(def, multiplier);
             presentationAssistantWindowOwner.Show(shortcut);

@@ -31,7 +31,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     {
         public virtual void FillColorTheme(ColorTheme theme)
         {
-
             //if (isDarkTheme.Value)
             //    FillDarkTheme(theme);
             //else

@@ -23,6 +23,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             "WordPrevExtend",
             "WordNext",
             "WordNextExtend",
+
+            // VS commands, not R# commands
+            "Edit.Up", "Edit.Down", "Edit.Left", "Edit.Right", "Edit.PageUp", "Edit.PageDown"
         };
 
         public static bool IsBlacklisted(string actionId)

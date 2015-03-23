@@ -85,10 +85,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private string GetPath(IActionDefWithId def)
         {
-            var path = actionPresentationHelper.GetPathPresentationToRoot(def);
-            if (!string.IsNullOrEmpty(path))
-                return path + " \u2192 ";
-            return string.Empty;
+            var actionWithPath = def as IActionWithPath;
+            var path = actionWithPath != null ? actionWithPath.Path : actionPresentationHelper.GetPathPresentationToRoot(def);
+
+            return !string.IsNullOrEmpty(path) ? MnemonicStore.RemoveMnemonicMark(path) + " \u2192 " : string.Empty;
         }
 
         private string GetText(IActionDefWithId def)
