@@ -18,7 +18,7 @@ using JetBrains.VsIntegration.Shell.ActionManagement;
 using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace JetBrains.ReSharper.Plugins.PresentationAssistant
+namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 {
     [ShellComponent]
     public class VsActionFinder : ActionFinder

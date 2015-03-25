@@ -8,16 +8,15 @@ using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.VsIntegration.Shell.ActionManagement;
 using JetBrains.VsIntegration.Shell.Actions.Revised;
 
-namespace JetBrains.ReSharper.Plugins.PresentationAssistant
+namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 {
     [ShellComponent]
-    public class VsShortcutFinder
+    public class VsShortcutFinder : OverriddenShortcutFinder
     {
         private readonly DTE dte;
         private readonly IThreading threading;
         private readonly IVsActionsDefs vsActionDefs;
 
-        // TODO: Optional components for when VS isn't available
         public VsShortcutFinder(DTE optionalDte, IThreading threading, IVsActionsDefs vsActionDefs)
         {
             dte = optionalDte;
@@ -28,7 +27,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         // This is the current key binding for the command being overridden by an action
         // By definition, this is the VS key binding (because we're overriding an existing
         // VS command and using its key bindings)
-        public ActionShortcut GetOverriddenVsShortcut(IActionDefWithId def)
+        public override ActionShortcut GetOverriddenVsShortcut(IActionDefWithId def)
         {
             if (dte == null)
                 return null;

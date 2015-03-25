@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Application;
 using JetBrains.Platform.VisualStudio.SinceVs11.Shell.Theming;
-using JetBrains.ReSharper.Plugins.PresentationAssistant;
+using JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio;
 using JetBrains.UI.Components.Theming;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 [assembly: RegisterThemeColor("PresentationAssistantWindow", CategoryDescriptor = typeof(ReSharperPresentationAssistantCategoryDescriptor), 
     DarkBackgroundColor = "#497549", DarkForegroundColor = "Black", LightBackgroundColor = "#BAEEBA", LightForegroundColor = "Black")]
 
-namespace JetBrains.ReSharper.Plugins.PresentationAssistant
+namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 {
     public class ReSharperPresentationAssistantCategoryDescriptor : RegisterThemeColorAttribute.ICategoryDescriptor
     {
@@ -30,9 +30,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         }
     }
 
-    // TODO: Move this to a VS 11 zone
-    // This IThemeColorFiller overrides the default values with values from VS, which are
-    // theme specific
+    // This IThemeColorFiller overrides the default values with values from VS, which are theme specific
     [ShellComponent]
     public class Vs11PresentationAssistantThemeColourFiller : PresentationAssistantThemeColourFiller
     {

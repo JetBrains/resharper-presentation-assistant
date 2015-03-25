@@ -221,9 +221,9 @@
     <Compile Include="Model.cs" />
     <Compile Include="FadingWpfPopupWindow.cs" />
     <Compile Include="KeyConverter.cs" />
+    <Compile Include="OverriddenShortcutFinder.cs" />
     <Compile Include="PresentationAssistant.cs" />
     <Compile Include="PresentationAssistantPopupWindowContext.cs" />
-    <Compile Include="PresentationAssistantVsThemeColor.cs" />
     <Compile Include="PresentationAssistantWindow.xaml.cs">
       <DependentUpon>PresentationAssistantWindow.xaml</DependentUpon>
     </Compile>
@@ -233,9 +233,10 @@
     <Compile Include="PresentationAssistantAction.cs" />
     <Compile Include="ShortcutFactory.9.0.cs" />
     <Compile Include="ShortcutFactory.cs" />
-    <Compile Include="VisualStudioPane.cs" />
-    <Compile Include="VsActionFinder.cs" />
-    <Compile Include="VsShortcutFinder.cs" />
+    <Compile Include="VisualStudio\PresentationAssistantVsThemeColor.cs" />
+    <Compile Include="VisualStudio\VsActionFinder.cs" />
+    <Compile Include="VisualStudio\VsShortcutFinder.cs" />
+    <Compile Include="VisualStudio\ZoneMarker.cs" />
     <Compile Include="WpfPopupWindow.cs" />
     <Compile Include="ZoneMarker.cs" />
   </ItemGroup>

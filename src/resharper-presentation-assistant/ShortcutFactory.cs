@@ -13,16 +13,18 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private static readonly char[] TrimCharacters = {'.', '\u2026'};
 
         private readonly IActionShortcuts actionShortcuts;
-        private readonly IActionDefs defs;
-        private readonly VsShortcutFinder vsShortcutFinder;
+        private readonly OverriddenShortcutFinder overriddenShortcutFinder;
         private readonly ActionPresentationHelper actionPresentationHelper;
 
-        public ShortcutFactory(IActionShortcuts actionShortcuts, IActionDefs defs,
-                               VsShortcutFinder vsShortcutFinder, ActionPresentationHelper actionPresentationHelper)
+        // Note: Only used by 9.0
+        private readonly IActionDefs defs;
+
+        public ShortcutFactory(IActionShortcuts actionShortcuts, IActionDefs defs, OverriddenShortcutFinder overriddenShortcutFinder,
+                               ActionPresentationHelper actionPresentationHelper)
         {
             this.actionShortcuts = actionShortcuts;
             this.defs = defs;
-            this.vsShortcutFinder = vsShortcutFinder;
+            this.overriddenShortcutFinder = overriddenShortcutFinder;
             this.actionPresentationHelper = actionPresentationHelper;
         }
 
@@ -151,7 +153,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             // If we don't have any VS shortcuts, look to see if the action is an override of a
             // VS command, and get the current key binding for that command
             if (!shortcut.HasVsShortcuts)
-                shortcut.VsShortcut = GetShortcutSequence(vsShortcutFinder.GetOverriddenVsShortcut(def));
+                shortcut.VsShortcut = GetShortcutSequence(overriddenShortcutFinder.GetOverriddenVsShortcut(def));
 
             if (HasSameShortcuts(shortcut) && !showSecondarySchemeIfSame)
                 shortcut.IntellijShortcut = null;
