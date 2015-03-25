@@ -3,25 +3,25 @@
   <metadata>
     <id>JetBrains.PresentationAssistant</id>
     <title>Presentation Assistant</title>
-    <version>1.1.0</version>
+    <version>2.1.0-EAP7-20150325</version>
     <authors>JetBrains</authors>
     <owners>JetBrains</owners>
     <description>Shows the name and keyboard shortcuts of invoked actions.</description>
     <summary>Shows the name and keyboard shortcuts of invoked actions.</summary>
-    <releaseNotes>Displays shortcuts for Visual Studio commands, where possible.</releaseNotes>
+    <releaseNotes>Support for ReSharper 9.1</releaseNotes>
     <projectUrl>https://github.com/JetBrains/resharper-presentation-assistant</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/JetBrains/resharper-presentaton-assistant/license.txt</licenseUrl>
     <iconUrl>http://resharper-plugins.jetbrains.com/Content/Images/packageReSharper.png</iconUrl>
     <copyright>Copyright 2015 JetBrains, s.r.o</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Wave" version="[1.0]" />
+      <dependency id="Wave" version="[2.0]" />
     </dependencies>
     <tags>resharper presentation assistant keymap</tags>
   </metadata>
   <files>
     <!-- Plugin -->
-    <file src="..\src\resharper-presentation-assistant\bin\Release\rs90\JetBrains.ReSharper.Plugins.PresentationAssistant.dll"
+    <file src="..\src\resharper-presentation-assistant\bin\Release\rs91\JetBrains.ReSharper.Plugins.PresentationAssistant.dll"
           target="DotFiles" />
   </files>
 </package>

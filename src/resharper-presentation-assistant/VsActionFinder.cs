@@ -80,7 +80,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
                         // Breadth first enumeration of descendant controls means the first time a command is encountered
                         // is always the shortest path to a control for that command
-                        var actionId = VsCommandHelpers.TryMapVsCommandIDToVsCommandName(commandId, vsCmdNameMapping);
+                        var actionId = vsCmdNameMapping.TryMapCommandIdToVsCommandName(commandId);
                         if (string.IsNullOrEmpty(actionId) || cachedActionDefs.ContainsKey(actionId))
                             continue;
 
@@ -157,6 +157,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             public string Text
             {
                 get { return backingFields.Value.Text; }
+                set { /* Do nothing */ }
             }
 
             public string Description

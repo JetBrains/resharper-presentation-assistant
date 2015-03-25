@@ -30,6 +30,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
             Enabled = new Property<bool>(lifetime, "PresentationAssistant::Enabled");
             Enabled.FlowInto(lifetime, presentationAssistantWindowOwner.Enabled);
+
+            // TODO: Remove this once EAP8 is released. EAP7 doesn't like Actions.
+            Enabled.SetValue(true);
         }
 
         public Property<bool> Enabled { get; private set; }

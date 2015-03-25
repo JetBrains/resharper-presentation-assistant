@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using EnvDTE;
 using JetBrains.ActionManagement;
@@ -13,16 +14,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     public class VsShortcutFinder
     {
         private readonly DTE dte;
-        private readonly VsBindingsConverter bindingsConverter;
         private readonly IThreading threading;
         private readonly IVsActionsDefs vsActionDefs;
 
         // TODO: Optional components for when VS isn't available
-        public VsShortcutFinder(DTE optionalDte, VsBindingsConverter optionalBindingsConverter, 
-                                IThreading threading, IVsActionsDefs vsActionDefs)
+        public VsShortcutFinder(DTE optionalDte, IThreading threading, IVsActionsDefs vsActionDefs)
         {
             dte = optionalDte;
-            bindingsConverter = optionalBindingsConverter;
             this.threading = threading;
             this.vsActionDefs = vsActionDefs;
         }
@@ -32,7 +30,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         // VS command and using its key bindings)
         public ActionShortcut GetOverriddenVsShortcut(IActionDefWithId def)
         {
-            if (dte == null || bindingsConverter == null)
+            if (dte == null)
                 return null;
 
             // Not sure if we're ever called on a non-UI thread, but better safe than sorry
@@ -59,11 +57,15 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             {
                 // Can use ShortcutUtil.BindingsToShortcut
                 // But would need to globalize the string?
-                var actionShortcut = bindingsConverter.ToActionShortcut(binding);
-                if (actionShortcut.Second != null)
-                    return actionShortcut.Second;
+                return ToActionShortcut(binding);
             }
             return null;
+        }
+
+        private static ActionShortcut ToActionShortcut(string binding)
+        {
+            var length = binding.IndexOf("::", StringComparison.Ordinal);
+            return ShortcutUtil.BindingsToShortcut(length > 0 ? binding.Substring(length + 2) : binding);
         }
 
         private string GetFirstBinding(object o)

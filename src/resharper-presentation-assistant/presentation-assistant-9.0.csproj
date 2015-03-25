@@ -17,7 +17,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\rs90\</OutputPath>
+    <IntermediateOutputPath>obj\Debug\rs90\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +26,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\rs90\</OutputPath>
+    <IntermediateOutputPath>obj\Release\rs90\</IntermediateOutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -215,6 +217,7 @@
     <Compile Include="ActionFinder.cs" />
     <Compile Include="ActionIdBlacklist.cs" />
     <Compile Include="BasePopupWindow.cs" />
+    <Compile Include="Compatibility.9.0.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="FadingWpfPopupWindow.cs" />
     <Compile Include="KeyConverter.cs" />
@@ -228,6 +231,7 @@
     <Compile Include="PresentationAssistantThemeColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PresentationAssistantAction.cs" />
+    <Compile Include="ShortcutFactory.9.0.cs" />
     <Compile Include="ShortcutFactory.cs" />
     <Compile Include="VisualStudioPane.cs" />
     <Compile Include="VsActionFinder.cs" />
@@ -236,7 +240,7 @@
     <Compile Include="ZoneMarker.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.presentation-assistant-9.0.config" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="PresentationAssistantWindow.xaml">
