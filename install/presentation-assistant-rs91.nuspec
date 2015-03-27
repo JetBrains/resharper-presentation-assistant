@@ -3,12 +3,16 @@
   <metadata>
     <id>JetBrains.PresentationAssistant</id>
     <title>Presentation Assistant</title>
-    <version>2.1.0-EAP7-20150325</version>
+    <version>2.1.0-EAP8-20150327</version>
     <authors>JetBrains</authors>
     <owners>JetBrains</owners>
     <description>Shows the name and keyboard shortcuts of invoked actions.</description>
     <summary>Shows the name and keyboard shortcuts of invoked actions.</summary>
-    <releaseNotes>Support for ReSharper 9.1</releaseNotes>
+    <releaseNotes>
+&#8226; Support for ReSharper 9.1
+&#8226; Show Visual Studio shortcuts whenever possible
+&#8226; Removed hack to make topmost - interferes with zooming the screen for presentations
+    </releaseNotes>
     <projectUrl>https://github.com/JetBrains/resharper-presentation-assistant</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/JetBrains/resharper-presentaton-assistant/license.txt</licenseUrl>
     <iconUrl>http://resharper-plugins.jetbrains.com/Content/Images/packageReSharper.png</iconUrl>
