@@ -91,58 +91,58 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             });
         }
 
-        private static void EnsureTopmost(IntPtr handle)
-        {
-            if (IsObscured(handle))
-                MakeTopmost(handle);
-        }
+        //private static void EnsureTopmost(IntPtr handle)
+        //{
+        //    if (IsObscured(handle))
+        //        MakeTopmost(handle);
+        //}
 
-        private static void MakeTopmost(IntPtr handle)
-        {
-            Win32Declarations.SetWindowPos(handle, (IntPtr)HwndSpecial.HWND_TOP, 0, 0, 0, 0,
-                SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE);
-        }
+        //private static void MakeTopmost(IntPtr handle)
+        //{
+        //    Win32Declarations.SetWindowPos(handle, (IntPtr)HwndSpecial.HWND_TOP, 0, 0, 0, 0,
+        //        SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOMOVE | SetWindowPosFlags.SWP_NOSIZE);
+        //}
 
-        private static bool IsObscured(IntPtr handle)
-        {
-            var dc = Win32Declarations.GetDC(handle);
-            try
-            {
-                RECT rcClip, rcClient = RECT.Empty;
-                var clipbox = GetClipBox(dc, out rcClip);
-                Win32Declarations.GetClientRect(handle, ref rcClient);
+        //private static bool IsObscured(IntPtr handle)
+        //{
+        //    var dc = Win32Declarations.GetDC(handle);
+        //    try
+        //    {
+        //        RECT rcClip, rcClient = RECT.Empty;
+        //        var clipbox = GetClipBox(dc, out rcClip);
+        //        Win32Declarations.GetClientRect(handle, ref rcClient);
 
-                switch (clipbox)
-                {
-                    case GetClipBoxReturn.Error:
-                        return false;
-                    case GetClipBoxReturn.NullRegion:
-                        return true;   // Window is hidden
-                    case GetClipBoxReturn.SimpleRegion:
-                        if (rcClip.left == rcClient.left && rcClip.right == rcClient.right && rcClip.top == rcClient.top && rcClip.bottom == rcClient.bottom)
-                            return false;
-                        return true;
-                    case GetClipBoxReturn.ComplexRegion:
-                        return true;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            finally
-            {
-                Win32Declarations.ReleaseDC(handle, dc);
-            }
-        }
+        //        switch (clipbox)
+        //        {
+        //            case GetClipBoxReturn.Error:
+        //                return false;
+        //            case GetClipBoxReturn.NullRegion:
+        //                return true;   // Window is hidden
+        //            case GetClipBoxReturn.SimpleRegion:
+        //                if (rcClip.left == rcClient.left && rcClip.right == rcClient.right && rcClip.top == rcClient.top && rcClip.bottom == rcClient.bottom)
+        //                    return false;
+        //                return true;
+        //            case GetClipBoxReturn.ComplexRegion:
+        //                return true;
+        //            default:
+        //                throw new ArgumentOutOfRangeException();
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        Win32Declarations.ReleaseDC(handle, dc);
+        //    }
+        //}
 
-        [DllImport("gdi32.dll")]
-        public static extern GetClipBoxReturn GetClipBox(IntPtr hdc, out RECT lpRect);
+        //[DllImport("gdi32.dll")]
+        //public static extern GetClipBoxReturn GetClipBox(IntPtr hdc, out RECT lpRect);
 
-        public enum GetClipBoxReturn : int
-        {
-            Error = 0,
-            NullRegion = 1,
-            SimpleRegion = 2,
-            ComplexRegion = 3
-        }
+        //public enum GetClipBoxReturn : int
+        //{
+        //    Error = 0,
+        //    NullRegion = 1,
+        //    SimpleRegion = 2,
+        //    ComplexRegion = 3
+        //}
     }
 }

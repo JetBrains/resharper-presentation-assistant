@@ -177,6 +177,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 get { return null; }
             }
 
+            public string DefaultShortcutText
+            {
+                get { return String.Empty; }
+            }
+
             public ShortcutScope ShortcutScope
             {
                 get { return ShortcutScope.Global; }
