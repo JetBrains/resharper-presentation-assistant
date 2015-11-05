@@ -30,9 +30,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         public Shortcut Create(IActionDefWithId def, int multiplier)
         {
-            IActionDefWithId overridingDef;
-            def = GetPrimaryDef(def, out overridingDef);
-
             var shortcut = new Shortcut
             {
                 ActionId = def.ActionId,
@@ -43,7 +40,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 Multiplier = multiplier
             };
 
-            SetShortcuts(shortcut, def, overridingDef);
+            SetShortcuts(shortcut, def);
             return shortcut;
         }
 
@@ -76,13 +73,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             return text;
         }
 
-        private void SetShortcuts(Shortcut shortcut, IActionDefWithId def, IActionDefWithId overridingDef)
+        private void SetShortcuts(Shortcut shortcut, IActionDefWithId def)
         {
             // TODO: Should this be an option in the options dialog? Show secondary scheme if different?
             const bool showSecondarySchemeIfSame = false;
 
             SetGivenShortcuts(shortcut, def, showSecondarySchemeIfSame);
-            SetVsOverriddenShortcuts(shortcut, overridingDef, showSecondarySchemeIfSame);
+            SetVsOverriddenShortcuts(shortcut, def, showSecondarySchemeIfSame);
             SetWellKnownShortcuts(shortcut, def, showSecondarySchemeIfSame);
         }
 
