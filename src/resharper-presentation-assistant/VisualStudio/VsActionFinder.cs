@@ -6,11 +6,10 @@ using EnvDTE;
 using JetBrains.ActionManagement;
 using JetBrains.Annotations;
 using JetBrains.Application;
-using JetBrains.Application.Parts;
+using JetBrains.Application.Catalogs;
 using JetBrains.DataFlow;
 using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.Util;
-using JetBrains.Util.Lazy;
 using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.Interop.Extension;
 using JetBrains.VsIntegration.Shell;
@@ -98,7 +97,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 
         private class CommandBarActionDef : IActionDefWithId, IActionWithPath
         {
-            private readonly Util.Lazy.Lazy<BackingFields> backingFields;
+            private readonly Lazy<BackingFields> backingFields;
 
             private class BackingFields
             {
@@ -134,7 +133,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                     }
 
                     return fields;
-                });
+                }, true);
             }
 
             public bool IsInternal
@@ -142,12 +141,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 get { return false; }
             }
 
-            public PartCatalogueType Part
+            public PartCatalogType Part
             {
-                get { return null; }
+                get { return default(PartCatalogType); }
             }
 
-            public PartCatalogueType IconType
+            public PartCatalogType? IconType
             {
                 get { return null; }
             }
@@ -164,6 +163,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
             {
                 get { return null; }
             }
+
+            public int? CustomVisualStudioId { get { return null; } }
 
             public CommandID CommandId { get; private set; }
 

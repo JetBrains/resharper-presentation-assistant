@@ -3,17 +3,13 @@
   <metadata>
     <id>JetBrains.PresentationAssistant</id>
     <title>Presentation Assistant</title>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <authors>JetBrains</authors>
     <owners>JetBrains</owners>
     <description>Shows the name and keyboard shortcuts of invoked actions.</description>
     <summary>Shows the name and keyboard shortcuts of invoked actions.</summary>
     <releaseNotes>
-&#8226; Support for ReSharper 9.2 RTM (#11)
-
-From previous releases:
-&#8226; Show Visual Studio shortcuts whenever possible
-&#8226; Removed hack to make topmost - interferes with zooming the screen for presentations
+&#8226; Support for ReSharper 10 RTM
     </releaseNotes>
     <projectUrl>https://github.com/JetBrains/resharper-presentation-assistant</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/JetBrains/resharper-presentaton-assistant/license.txt</licenseUrl>
@@ -21,7 +17,7 @@ From previous releases:
     <copyright>Copyright 2015 JetBrains, s.r.o</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Wave" version="[3.0]" />
+      <dependency id="Wave" version="[4.0]" />
     </dependencies>
     <tags>resharper presentation assistant keymap</tags>
   </metadata>
