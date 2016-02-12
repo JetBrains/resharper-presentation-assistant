@@ -25,7 +25,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             "WordNextExtend",
 
             // VS commands, not R# commands
-            "Edit.Up", "Edit.Down", "Edit.Left", "Edit.Right", "Edit.PageUp", "Edit.PageDown"
+            "Edit.Up", "Edit.Down", "Edit.Left", "Edit.Right", "Edit.PageUp", "Edit.PageDown",
+
+            // Make sure we don't try to show the presentation assistant popup just as we're
+            // killing the popups
+            PresentationAssistantAction.ActionId
         };
 
         public static bool IsBlacklisted(string actionId)

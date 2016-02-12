@@ -5,20 +5,24 @@ using JetBrains.UI.ActionsRevised;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
-    [Action("PresentationAssistant.Toggle", "Presentation Assistant", Description = "Enable and disable the presentation assistant", Id = 987987)]
+    [Action(ActionId, "Presentation Assistant", Description = "Enable and disable the presentation assistant", Id = 987987)]
     public class PresentationAssistantAction : ICheckableAction, IInsertLast<ToolsMenu>
     {
+        public const string ActionId = "PresentationAssistant.Toggle";
+
         public bool Update(IDataContext context, CheckedActionPresentation presentation)
         {
-            var presentationAssistant = context.GetComponent<PresentationAssistant>();
-            presentation.Checked = presentationAssistant.Enabled.Value;
+            var settings = context.GetComponent<PresentationAssistantSettingsStore>().GetSettings();
+            presentation.Checked = settings.Enabled;
             return true;
         }
 
         public void Execute(IDataContext context)
         {
-            var presentationAssistant = context.GetComponent<PresentationAssistant>();
-            presentationAssistant.Enabled.SetValue(!presentationAssistant.Enabled.Value);
+            var settingsStore = context.GetComponent<PresentationAssistantSettingsStore>();
+            var settings = settingsStore.GetSettings();
+            settings.Enabled = !settings.Enabled;
+            settingsStore.SetSettings(settings);
         }
     }
 }

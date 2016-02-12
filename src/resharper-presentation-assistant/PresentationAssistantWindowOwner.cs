@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Windows.Interop;
 using JetBrains.Application;
 using JetBrains.DataFlow;
-using JetBrains.Interop.WinApi;
 using JetBrains.Threading;
 using JetBrains.UI.PopupWindowManager;
 using JetBrains.UI.Theming;
@@ -14,7 +11,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     public class PresentationAssistantWindowOwner
     {
         private static readonly TimeSpan VisibleTimeSpan = TimeSpan.FromSeconds(4);
-        private static readonly TimeSpan TopmostTimeSpan = TimeSpan.FromMilliseconds(200);
 
         private readonly IThreading threading;
         private readonly PresentationAssistantPopupWindowContext context;
@@ -46,7 +42,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             var popupWindowLifetimeDefinition = Lifetimes.Define(enabledLifetime, "PresentationAssistant::PopupWindow");
 
             var window = new PresentationAssistantWindow();
-            var windowInteropHelper = new WindowInteropHelper(window) { Owner = context.MainWindow.Handle };
 
             theming.PopulateResourceDictionary(popupWindowLifetimeDefinition, window.Resources);
 
