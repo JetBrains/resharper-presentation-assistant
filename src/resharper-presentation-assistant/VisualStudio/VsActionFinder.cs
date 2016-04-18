@@ -70,7 +70,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 foreach (var tuple in enumDescendantControls)
                 {
                     // Make sure it's an actionable type (e.g. not a CommandBarPopup, or _CommandBarActiveX)
-                    var commandBarControl = tuple.A;
+                    var commandBarControl = tuple.Item1;
                     if (commandBarControl is CommandBarButton || commandBarControl is CommandBarComboBox)
                     {
                         var commandId = VsCommandHelpersTodo.TryGetVsControlCommandID(commandBarControl, dte);
@@ -83,7 +83,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                         if (string.IsNullOrEmpty(actionId) || cachedActionDefs.ContainsKey(actionId))
                             continue;
 
-                        var commandBarPopups = tuple.B;
+                        var commandBarPopups = tuple.Item2;
                         var def = new CommandBarActionDef(vsShortcutFinder, dte, actionId, commandId, commandBarControl,
                             commandBarPopups ?? EmptyArray<CommandBarPopup>.Instance);
                         cachedActionDefs.Add(actionId, def);
@@ -204,7 +204,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
         /// Each returned item is the descandant control plus an array of its parents, top to bottom.
         /// </summary>
         [NotNull]
-        public static IEnumerable<JetTuple<CommandBarControl, CommandBarPopup[]>> EnumDescendantControls(
+        public static IEnumerable<Tuple<CommandBarControl, CommandBarPopup[]>> EnumDescendantControls(
             [NotNull] this CommandBar root, [NotNull] CompoundException cex)
         {
             if (root == null)
@@ -213,32 +213,32 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 throw new ArgumentNullException("cex");
 
             var queueEnumChildren =
-                new Queue<JetTuple<CommandBar, CommandBarPopup[]>>(new[]
-                {JetTuple.Of(root, EmptyArray<CommandBarPopup>.Instance)});
+                new Queue<Tuple<CommandBar, CommandBarPopup[]>>(new[]
+                {Tuple.Create(root, EmptyArray<CommandBarPopup>.Instance)});
             int nBar = -1;
 
             while (queueEnumChildren.Any())
             {
-                JetTuple<CommandBar, CommandBarPopup[]> tuple = queueEnumChildren.Dequeue();
+                Tuple<CommandBar, CommandBarPopup[]> tuple = queueEnumChildren.Dequeue();
 
                 nBar++;
                 List<CommandBarControl> children = null;
                 try
                 {
                     // All children
-                    children = tuple.A.Controls.OfType<CommandBarControl>().ToList();
+                    children = tuple.Item1.Controls.OfType<CommandBarControl>().ToList();
 
                     // EnqueueJob child containers
                     children.OfType<CommandBarPopup>()
-                        .Select(popup => JetTuple.Of(popup.CommandBar, tuple.B.Concat(popup).ToArray()))
+                        .Select(popup => Tuple.Create(popup.CommandBar, tuple.Item2.Concat(popup).ToArray()))
                         .ForEach(queueEnumChildren.Enqueue);
                 }
                 catch (Exception e)
                 {
                     var ex = new LoggerException("Failed to enum command bar child controls.", e);
                     ex.AddData("IndexInQueue", () => nBar);
-                    ex.AddData("CommandBarName", () => tuple.A.Name);
-                    ex.AddData("CommandBarIndexProperty", () => tuple.A.Index);
+                    ex.AddData("CommandBarName", () => tuple.Item1.Name);
+                    ex.AddData("CommandBarIndexProperty", () => tuple.Item1.Index);
                     cex.Exceptions.Add(ex);
                 }
 
@@ -246,7 +246,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 if (children != null) // Null if were exceptions (cannot yield from a catch)
                 {
                     foreach (CommandBarControl child in children)
-                        yield return JetTuple.Of(child, tuple.B);
+                        yield return Tuple.Create(child, tuple.Item2);
                 }
             }
         }
