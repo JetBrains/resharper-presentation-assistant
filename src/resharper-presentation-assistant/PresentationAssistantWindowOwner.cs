@@ -43,12 +43,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
             var window = new PresentationAssistantWindow();
 
-            theming.PopulateResourceDictionary(popupWindowLifetimeDefinition, window.Resources);
+            theming.PopulateResourceDictionary(popupWindowLifetimeDefinition.Lifetime, window.Resources);
 
             var popupWindow = new FadingWpfPopupWindow(popupWindowLifetimeDefinition, context, context.Mutex,
                 popupWindowManager, window, opacity: 0.8);
 
-            var visibilityLifetimes = new SequentialLifetimes(popupWindowLifetimeDefinition);
+            var visibilityLifetimes = new SequentialLifetimes(popupWindowLifetimeDefinition.Lifetime);
 
             showAction = shortcut =>
             {
