@@ -1,8 +1,8 @@
 using System;
 using System.Windows;
+using JetBrains.Application.UI.CrossFramework;
 using JetBrains.DataFlow;
 using JetBrains.UI;
-using JetBrains.UI.CrossFramework;
 using JetBrains.UI.PopupWindowManager;
 using JetBrains.Util.Interop;
 
@@ -13,9 +13,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly Window window;
         private PopupWindowLayoutMode layoutMode;
 
-        public WpfPopupWindow(LifetimeDefinition lifetimeDefinition, IPopupWindowContext context,
-                              PopupWindowMutex mutex, PopupWindowManager popupWindowManager,
-                              Window window, HideFlags hideFlags = HideFlags.None)
+        protected WpfPopupWindow(LifetimeDefinition lifetimeDefinition, IPopupWindowContext context,
+                                 PopupWindowMutex mutex, PopupWindowManager popupWindowManager,
+                                 Window window, HideFlags hideFlags = HideFlags.None)
             : base(lifetimeDefinition, context, mutex, hideFlags)
         {
             this.window = window;
@@ -68,7 +68,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             window.SourceInitialized -= OnWindowSourceInitialized;
         }
 
-        void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdatePopupLayout();
         }

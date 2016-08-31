@@ -17,7 +17,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 {
     public class ReSharperPresentationAssistantCategoryDescriptor : RegisterThemeColorAttribute.ICategoryDescriptor
     {
-        public static readonly Guid Category = new Guid("{9FEAEEFD-3AC8-4ABD-95D2-FE44A4F9F57B}");
+        private static readonly Guid Category = new Guid("{9FEAEEFD-3AC8-4ABD-95D2-FE44A4F9F57B}");
 
         public string CategoryName
         {

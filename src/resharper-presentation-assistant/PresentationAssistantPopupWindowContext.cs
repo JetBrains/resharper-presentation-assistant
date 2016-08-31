@@ -12,32 +12,25 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
     [ShellComponent]
     public class PresentationAssistantPopupWindowContext : PopupWindowContext
     {
-        private static readonly PopupWindowMutex mutex = new PopupWindowMutex();
+        private static readonly PopupWindowMutex PopupWindowMutex = new PopupWindowMutex();
 
         private readonly IWindowsHookManager windowsHookManager;
+        private readonly IMainWindow mainWindow;
 
         public PresentationAssistantPopupWindowContext(Lifetime lifetime, IActionManager actionManager,
-                                                       PopupWindowManager popupWindowManager,
-                                                       IMainWindow mainWindow,
-                                                       IWindowsHookManager windowsHookManager,
-                                                       IIsApplicationActiveState applicationActiveState)
+                                                       IMainWindow mainWindow, IWindowsHookManager windowsHookManager)
             : base(lifetime, actionManager)
         {
             this.windowsHookManager = windowsHookManager;
-            MainWindow = mainWindow;
-            PopupWindowManager = popupWindowManager;
-            IsApplicationActive = applicationActiveState.IsApplicationActive;
-            Mutex = mutex;
+            this.mainWindow = mainWindow;
+            Mutex = PopupWindowMutex;
         }
 
-        public IMainWindow MainWindow { get; private set; }
-        public PopupWindowManager PopupWindowManager { get; private set; }
-        public IProperty<bool> IsApplicationActive { get; private set; }
         public PopupWindowMutex Mutex { get; private set; }
 
         public override IPopupLayouter CreateLayouter(Lifetime lifetime)
         {
-            var anchor = WindowAnchoringRect.AnchorToMainWindowSafe(lifetime, MainWindow, windowsHookManager);
+            var anchor = WindowAnchoringRect.AnchorToPrimaryMainWindowSafe(lifetime, mainWindow, windowsHookManager);
             var dispositions = new[] {new Anchoring2D(Anchoring.MiddleWithin, Anchoring.FarWithin)};
 
             // Padding is in pixels...

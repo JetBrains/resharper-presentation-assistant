@@ -77,7 +77,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             AttachWindowEvents();
 
             if (popupWindowManager != null)
-                popupWindowManager.PopupWindows.Add(lifetime, this, null);
+                popupWindowManager.PopupWindows.Add(lifetime, this);
         }
 
         protected abstract void OnLayouterResultChanged(PropertyChangedEventArgs<LayoutResult> args);

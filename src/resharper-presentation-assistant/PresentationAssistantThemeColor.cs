@@ -20,7 +20,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public static readonly object PresentationAssistantWindowBackgroundBrushKey = PresentationAssistantWindowBackground.BrushKey;
         public static readonly object PresentationAssistantWindowForegroundBrushKey = PresentationAssistantWindowForeground.BrushKey;
 
-        public PresentationAssistantThemeColor(string name, Color defaultColour)
+        private PresentationAssistantThemeColor(string name, Color defaultColour)
             : base(name, defaultColour, false, true)
         {
         }
@@ -37,12 +37,14 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 FillLightTheme(theme);
         }
 
+/*
         private void FillDarkTheme(ColorTheme theme)
         {
             theme.SetGDIColor(PresentationAssistantThemeColor.PresentationAssistantWindowBorder, Color.Black);
             theme.SetGDIColor(PresentationAssistantThemeColor.PresentationAssistantWindowBackground, Color.FromArgb(0x49, 0x75, 0x49));
             theme.SetGDIColor(PresentationAssistantThemeColor.PresentationAssistantWindowForeground, Color.Black);
         }
+*/
 
         private void FillLightTheme(ColorTheme theme)
         {

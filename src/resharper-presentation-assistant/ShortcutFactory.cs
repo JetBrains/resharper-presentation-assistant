@@ -8,7 +8,7 @@ using JetBrains.UI.PopupMenu.Impl;
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
     [ShellComponent]
-    public partial class ShortcutFactory
+    public class ShortcutFactory
     {
         private static readonly char[] TrimCharacters = {'.', '\u2026'};
 
@@ -16,14 +16,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly OverriddenShortcutFinder overriddenShortcutFinder;
         private readonly ActionPresentationHelper actionPresentationHelper;
 
-        // Note: Only used by 9.0
-        private readonly IActionDefs defs;
-
-        public ShortcutFactory(IActionShortcuts actionShortcuts, IActionDefs defs, OverriddenShortcutFinder overriddenShortcutFinder,
+        public ShortcutFactory(IActionShortcuts actionShortcuts, OverriddenShortcutFinder overriddenShortcutFinder,
                                ActionPresentationHelper actionPresentationHelper)
         {
             this.actionShortcuts = actionShortcuts;
-            this.defs = defs;
             this.overriddenShortcutFinder = overriddenShortcutFinder;
             this.actionPresentationHelper = actionPresentationHelper;
         }

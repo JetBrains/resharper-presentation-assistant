@@ -11,7 +11,6 @@ using JetBrains.DataFlow;
 using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
-using JetBrains.VsIntegration.Interop.Extension;
 using JetBrains.VsIntegration.Shell;
 using JetBrains.VsIntegration.Shell.ActionManagement;
 using Microsoft.VisualStudio.CommandBars;
@@ -61,7 +60,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 
         private void PopulateCachedActionDefs()
         {
-            var menuBar = Logger.CatchSilent(() => dte.CommandBars()["MenuBar"]);
+            var menuBar = Logger.CatchSilent(() => ((CommandBars) dte.CommandBars)["MenuBar"]);
             if (menuBar != null)
             {
                 var compoundException = new CompoundException();
@@ -110,13 +109,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                                        CommandBarControl control, CommandBarPopup[] parentPopups)
             {
                 ActionId = actionId;
-                CommandId = commandId;
 
                 // Lazily initialise. Talking to the command bar objects is SLOOOOOOOWWWWWW.
                 backingFields = Lazy.Of(() =>
                 {
-                    if (control == null)
-                        MessageBox.ShowInfo("actionId", "Control is null!!!");
+                    Assertion.AssertNotNull(control, "control != null");
 
                     var fields = new BackingFields
                     {
@@ -165,8 +162,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
             }
 
             public int? CustomVisualStudioId { get { return null; } }
-
-            public CommandID CommandId { get; private set; }
 
             public string[] VsShortcuts
             {
