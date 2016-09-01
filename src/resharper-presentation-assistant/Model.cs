@@ -10,7 +10,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             Details = details;
         }
 
-        public ShortcutDetails[] Details { get; private set; }
+        public ShortcutDetails[] Details { get; }
 
         public override string ToString()
         {
@@ -31,9 +31,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         }
 
         public string Key { get; set; }
-        public bool HasAlt { get; private set; }
-        public bool HasControl { get; private set; }
-        public bool HasShift { get; private set; }
+        public bool HasAlt { get; }
+        public bool HasControl { get; }
+        public bool HasShift { get; }
 
         public override string ToString()
         {
@@ -56,25 +56,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public ShortcutSequence IntellijShortcut { get; set; }
         public ShortcutScheme CurrentScheme { get; set; }
 
-        public bool HasVsShortcuts
-        {
-            get { return VsShortcut != null; }
-        }
-
-        public bool HasIntellijShortcuts
-        {
-            get { return IntellijShortcut != null; }
-        }
-
-        public bool HasShortcuts
-        {
-            // VS shortcuts are the primary. If we don't have them, don't show anything
-            get { return HasVsShortcuts; }
-        }
-
-        public bool HasMultiplier
-        {
-            get { return Multiplier > 1; }
-        }
+        public bool HasVsShortcuts => VsShortcut != null;
+        public bool HasIntellijShortcuts => IntellijShortcut != null;
+        // VS shortcuts are the primary. If we don't have them, don't show anything
+        public bool HasShortcuts => HasVsShortcuts;
+        public bool HasMultiplier => Multiplier > 1;
     }
 }

@@ -34,7 +34,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             Enabled.WhenTrue(lifetime, EnableShortcuts);
         }
 
-        public IProperty<bool> Enabled { get; private set; }
+        public IProperty<bool> Enabled { get; }
 
         public void Show(Shortcut shortcut)
         {

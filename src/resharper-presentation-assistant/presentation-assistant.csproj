@@ -378,7 +378,6 @@
     <Compile Include="PresentationAssistantWindowOwner.cs" />
     <Compile Include="PresentationAssistantThemeColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShortcutFactory.cs" />
     <Compile Include="VisualStudio\ZoneMarker.cs">
       <SubType>Code</SubType>
     </Compile>

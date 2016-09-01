@@ -169,7 +169,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 case LookupItemInsertType.Template:
                     return "Insert Template";
                 default:
-                    throw new ArgumentOutOfRangeException("insertType", insertType, null);
+                    throw new ArgumentOutOfRangeException(nameof(insertType), insertType, null);
             }
         }
 

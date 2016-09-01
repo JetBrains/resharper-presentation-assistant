@@ -127,9 +127,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             }
         }
 
-        public override bool Visible
-        {
-            get { return !IsDisposed && window != null && window.IsVisible; }
-        }
+        public override bool Visible => !IsDisposed && window != null && window.IsVisible;
     }
 }

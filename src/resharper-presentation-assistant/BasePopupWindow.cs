@@ -64,8 +64,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             if (context != null)
             {
                 lifetime.AddBracket(() => Layouter = context.CreateLayouter(lifetime), () => Layouter = null);
-                if (Layouter != null)
-                    Layouter.Layout.Change.Advise_HasNew(lifetime, OnLayouterResultChanged);
+                Layouter?.Layout.Change.Advise_HasNew(lifetime, OnLayouterResultChanged);
 
                 context.AnyOtherAction += OnContextOwnerAnyActionPerformed;
                 context.Scroll += OnContextOwnerScroll;
@@ -76,8 +75,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
             AttachWindowEvents();
 
-            if (popupWindowManager != null)
-                popupWindowManager.PopupWindows.Add(lifetime, this);
+            popupWindowManager?.PopupWindows.Add(lifetime, this);
         }
 
         protected abstract void OnLayouterResultChanged(PropertyChangedEventArgs<LayoutResult> args);
@@ -99,11 +97,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         protected abstract void AttachWindowEvents();
         protected abstract void DetachWindowEvents();
-
-        protected bool HideOnFocusLoss
-        {
-            get { return (hideFlags & HideFlags.FocusLoss) != 0; }
-        }
 
         private void OnContextOwnerAnyActionPerformed(object sender, EventArgs args)
         {
@@ -171,16 +164,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             return true;
         }
 
-        public IPopupWindowContext Context { get; private set; }
+        public IPopupWindowContext Context { get; }
         public FormHideMethod HideMethod { get; set; }
 
-        public bool IsDisposed
-        {
-            get { return lifetimeDefinition.IsTerminated; }
-        }
+        public bool IsDisposed => lifetimeDefinition.IsTerminated;
 
         public abstract PopupWindowLayoutMode LayoutMode { get; set; }
-        public PopupWindowMutex Mutex { get; private set; }
+        public PopupWindowMutex Mutex { get; }
         public abstract bool Visible { get; }
 
         public event EventHandler Closed;
@@ -189,8 +179,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         {
             try
             {
-                if (Closed != null)
-                    Closed(this, EventArgs.Empty);
+                Closed?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {

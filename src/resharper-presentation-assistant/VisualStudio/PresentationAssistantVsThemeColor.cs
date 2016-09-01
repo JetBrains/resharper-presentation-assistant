@@ -19,15 +19,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
     {
         private static readonly Guid Category = new Guid("{9FEAEEFD-3AC8-4ABD-95D2-FE44A4F9F57B}");
 
-        public string CategoryName
-        {
-            get { return "ReSharperPresentationAssistant"; }
-        }
-
-        public Guid CategoryGuid
-        {
-            get { return Category; }
-        }
+        public string CategoryName => "ReSharperPresentationAssistant";
+        public Guid CategoryGuid => Category;
     }
 
     // This IThemeColorFiller overrides the default values with values from VS, which are theme specific

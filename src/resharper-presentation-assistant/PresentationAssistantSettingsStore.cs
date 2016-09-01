@@ -33,7 +33,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             });
         }
 
-        public SimpleSignal SettingsChanged { get; private set; }
+        public SimpleSignal SettingsChanged { get; }
 
         public PresentationAssistantSettings GetSettings()
         {

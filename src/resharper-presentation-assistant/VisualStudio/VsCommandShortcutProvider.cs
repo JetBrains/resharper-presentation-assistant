@@ -166,22 +166,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 }, true);
             }
 
-            public string ActionId { get; private set; }
+            public string ActionId { get; }
 
-            public string Text
-            {
-                get { return backingFields.Value.Text; }
-            }
-
-            public ShortcutSequence VsShortcuts
-            {
-                get { return backingFields.Value.VsShortcut; }
-            }
-
-            public string Path
-            {
-                get { return backingFields.Value.Path; }
-            }
+            public string Text => backingFields.Value.Text;
+            public ShortcutSequence VsShortcuts => backingFields.Value.VsShortcut;
+            public string Path => backingFields.Value.Path;
         }
     }
 
@@ -198,9 +187,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
             [NotNull] this CommandBar root, [NotNull] CompoundException cex)
         {
             if (root == null)
-                throw new ArgumentNullException("root");
+                throw new ArgumentNullException(nameof(root));
             if (cex == null)
-                throw new ArgumentNullException("cex");
+                throw new ArgumentNullException(nameof(cex));
 
             var queueEnumChildren =
                 new Queue<Tuple<CommandBar, CommandBarPopup[]>>(new[]
