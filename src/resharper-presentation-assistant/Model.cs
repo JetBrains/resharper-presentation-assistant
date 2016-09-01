@@ -51,7 +51,6 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public string ActionId { get; set; }
         public string Text { get; set; }
         public string Path { get; set; }
-        public string Description { get; set; } // Only used by 1 action in ReSharper!
         public int Multiplier { get; set; }
         public ShortcutSequence VsShortcut { get; set; }
         public ShortcutSequence IntellijShortcut { get; set; }

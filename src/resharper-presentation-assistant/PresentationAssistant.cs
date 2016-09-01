@@ -1,36 +1,28 @@
-﻿using System;
-using JetBrains.Application;
+﻿using JetBrains.Application;
 using JetBrains.Application.ActivityTrackingNew;
 using JetBrains.Application.Parts;
 using JetBrains.DataFlow;
 using JetBrains.Threading;
-using JetBrains.UI.ActionsRevised.Loader;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
     [ShellComponent(Requirement = InstantiationRequirement.Instant)]
     public class PresentationAssistant : IActivityTracking
     {
-        private static readonly TimeSpan MultiplierTimeout = TimeSpan.FromSeconds(10);
-
-        private readonly ActionFinder actionFinder;
+        private readonly ShortcutProvider shortcutProvider;
         private readonly PresentationAssistantWindowOwner presentationAssistantWindowOwner;
-        private readonly ShortcutFactory shortcutFactory;
         private readonly PresentationAssistantSettingsStore settingsStore;
 
-        private DateTime lastDisplayed;
-        private string lastActionId;
-        private int multiplier;
         private bool enabled;
 
-        public PresentationAssistant(Lifetime lifetime, ActionFinder actionFinder,
+        public PresentationAssistant(Lifetime lifetime,
+                                     ShortcutProvider shortcutProvider,
                                      PresentationAssistantWindowOwner presentationAssistantWindowOwner,
-                                     ShortcutFactory shortcutFactory, PresentationAssistantSettingsStore settingsStore,
+                                     PresentationAssistantSettingsStore settingsStore,
                                      IThreading threading)
         {
-            this.actionFinder = actionFinder;
+            this.shortcutProvider = shortcutProvider;
             this.presentationAssistantWindowOwner = presentationAssistantWindowOwner;
-            this.shortcutFactory = shortcutFactory;
             this.settingsStore = settingsStore;
 
             // Post to the UI thread so that the app has time to start before we show the message
@@ -45,7 +37,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             // Post to the UI thread because settings change are raised on a background thread.
             // Has the unfortunate side effect that the action disabling the assistant is shown
             // very briefly, so we blacklist it
-            settingsStore.SettingsChanged.Advise(lifetime, _ => threading.ExecuteOrQueue("Presentation Assistant update enabled", () => UpdateSettings(true)));
+            settingsStore.SettingsChanged.Advise(lifetime,
+                _ => threading.ExecuteOrQueue("Presentation Assistant update enabled", () => UpdateSettings(true)));
         }
 
         private void UpdateSettings(bool showOwnActionImmediately)
@@ -72,38 +65,27 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         public void TrackActivity(string activityGroup, string activityId, int count = 1)
         {
-            if (!enabled)
+            if (!enabled 
+                || activityGroup != "VsAction"
+                || ActionIdBlacklist.IsBlacklisted(activityId))
+            {
                 return;
+            }
 
-            if (activityGroup == "VsAction" && !ActionIdBlacklist.IsBlacklisted(activityId))
-                OnAction(activityId);
+            // TODO: "BulbAction" gives full type name of quick fix or context action.
+            // IContextActionInfo.Name would give a name to display. Get all context
+            // actions via IContextActionTable.AllActions (refresh when types change
+            // available in ShellPartCatalogueType), keyed on ICAI.ActionKey.
+            // QuickFix doesn't have a name, instance returns bulb actions with text.
+            // Don't think it's possible to get a friendly name
+            OnAction(activityId);
         }
 
         private void OnAction(string actionId)
         {
-            var def = actionFinder.Find(actionId);
-            if (def == null)
-                return;
-
-            OnAction(def);
-        }
-
-        private void OnAction(IActionDefWithId def)
-        {
-            UpdateMultiplier(def.ActionId);
-            var shortcut = shortcutFactory.Create(def, multiplier);
-            presentationAssistantWindowOwner.Show(shortcut);
-        }
-
-        private void UpdateMultiplier(string actionId)
-        {
-            var now = DateTime.UtcNow;
-            if (actionId == lastActionId && (now - lastDisplayed) < MultiplierTimeout)
-                multiplier++;
-            else
-                multiplier = 1;
-            lastDisplayed = now;
-            lastActionId = actionId;
+            var shortcut = shortcutProvider.GetShortcut(actionId);
+            if (shortcut != null)
+                presentationAssistantWindowOwner.Show(shortcut);
         }
     }
 }

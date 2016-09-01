@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Text;
 using EnvDTE;
-using JetBrains.ActionManagement;
 using JetBrains.Annotations;
 using JetBrains.Application;
-using JetBrains.Application.Catalogs;
 using JetBrains.DataFlow;
-using JetBrains.UI.ActionsRevised.Loader;
+using JetBrains.UI.ActionsRevised.Shortcuts;
+using JetBrains.UI.PopupMenu.Impl;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.Shell;
@@ -19,36 +19,58 @@ using Microsoft.VisualStudio.Shell.Interop;
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 {
     [ShellComponent]
-    public class VsActionFinder : ActionFinder
+    public class VsCommandShortcutProvider : IShortcutProvider
     {
+        private readonly ShortcutDisplayStatistics statistics;
         private readonly IVsCmdNameMapping vsCmdNameMapping;
         private readonly VsShortcutFinder vsShortcutFinder;
+        private readonly IActionShortcuts actionShortcuts;
         private readonly DTE dte;
-        private readonly IDictionary<string, IActionDefWithId> cachedActionDefs;
+        private readonly IDictionary<string, CommandBarActionDef> cachedActionDefs;
 
-        public VsActionFinder(Lifetime lifetime, IActionDefs defs, DTE dte, IVsCmdNameMapping vsCmdNameMapping,
-                              VsShortcutFinder vsShortcutFinder, VsToolsOptionsMonitor vsToolsOptionsMonitor)
-            : base(defs)
+        public VsCommandShortcutProvider(Lifetime lifetime, ShortcutDisplayStatistics statistics, DTE dte,
+                                         IVsCmdNameMapping vsCmdNameMapping,
+                                         VsShortcutFinder vsShortcutFinder,
+                                         VsToolsOptionsMonitor vsToolsOptionsMonitor,
+                                         IActionShortcuts actionShortcuts)
         {
+            this.statistics = statistics;
             this.vsCmdNameMapping = vsCmdNameMapping;
             this.vsShortcutFinder = vsShortcutFinder;
+            this.actionShortcuts = actionShortcuts;
             this.dte = dte;
 
-            cachedActionDefs = new Dictionary<string, IActionDefWithId>();
+            cachedActionDefs = new Dictionary<string, CommandBarActionDef>();
             vsToolsOptionsMonitor.VsOptionsMightHaveChanged.Advise(lifetime, _ => cachedActionDefs.Clear());
         }
 
-        public override IActionDefWithId Find(string actionId)
+        public Shortcut GetShortcut(string actionId)
         {
-            var def = base.Find(actionId);
-            if (def != null)
-                return def;
+            var def = Find(actionId);
+            if (def == null)
+                return null;
 
-            var cached = GetCachedActionDefs();
-            return cached.TryGetValue(actionId, out def) ? def : null;
+            statistics.OnAction(actionId);
+
+            return new Shortcut
+            {
+                ActionId = def.ActionId,
+                Text = def.Text,
+                Path = def.Path,
+                CurrentScheme = actionShortcuts.CurrentScheme,
+                VsShortcut = def.VsShortcuts,
+                Multiplier = statistics.Multiplier
+            };
+        }
+        
+        private CommandBarActionDef Find(string actionId)
+        {
+            var cache = GetCachedActionDefs();
+            CommandBarActionDef def;
+            return cache.TryGetValue(actionId, out def) ? def : null;
         }
 
-        private IDictionary<string, IActionDefWithId> GetCachedActionDefs()
+        private IDictionary<string, CommandBarActionDef> GetCachedActionDefs()
         {
             if (cachedActionDefs.Any())
                 return cachedActionDefs;
@@ -94,7 +116,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
             }
         }
 
-        private class CommandBarActionDef : IActionDefWithId, IActionWithPath
+        private class CommandBarActionDef
         {
             private readonly Lazy<BackingFields> backingFields;
 
@@ -102,11 +124,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
             {
                 public string Text;
                 public string Path;
-                public string[] VsShortcuts;
+                public ShortcutSequence VsShortcut;
             }
 
-            public CommandBarActionDef(VsShortcutFinder vsShortcutFinder, DTE dte, string actionId, CommandID commandId,
-                                       CommandBarControl control, CommandBarPopup[] parentPopups)
+            public CommandBarActionDef(VsShortcutFinder vsShortcutFinder, DTE dte, string actionId,
+                                       CommandID commandId, CommandBarControl control,
+                                       CommandBarPopup[] parentPopups)
             {
                 ActionId = actionId;
 
@@ -115,37 +138,32 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 {
                     Assertion.AssertNotNull(control, "control != null");
 
+                    var sb = new StringBuilder();
+                    foreach (var popup in parentPopups)
+                        sb.AppendFormat("{0} \u2192 ", popup.Caption);
+
                     var fields = new BackingFields
                     {
-                        Text = control.Caption,
-                        Path = string.Join(" \u2192 ", parentPopups.Select(p => p.Caption))
+                        Text = MnemonicStore.RemoveMnemonicMark(control.Caption),
+                        Path = MnemonicStore.RemoveMnemonicMark(sb.ToString())
                     };
 
                     var command = VsCommandHelpers.TryGetVsCommandAutomationObject(commandId, dte);
                     var vsShortcut = vsShortcutFinder.GetVsShortcut(command);
-                    if (vsShortcut != null && vsShortcut.KeyboardShortcuts != null &&
-                        vsShortcut.KeyboardShortcuts.Length > 0)
+                    if (vsShortcut != null)
                     {
-                        fields.VsShortcuts = new[] {vsShortcut.KeyboardShortcuts[0].ToString()};
+                        var details = new ShortcutDetails[vsShortcut.KeyboardShortcuts.Length];
+                        for (int i = 0; i < vsShortcut.KeyboardShortcuts.Length; i++)
+                        {
+                            var keyboardShortcut = vsShortcut.KeyboardShortcuts[i];
+                            details[i] = new ShortcutDetails(KeyConverter.Convert(keyboardShortcut.Key),
+                                keyboardShortcut.Modifiers);
+                        }
+                        fields.VsShortcut = new ShortcutSequence(details);
                     }
 
                     return fields;
                 }, true);
-            }
-
-            public bool IsInternal
-            {
-                get { return false; }
-            }
-
-            public PartCatalogType Part
-            {
-                get { return default(PartCatalogType); }
-            }
-
-            public PartCatalogType? IconType
-            {
-                get { return null; }
             }
 
             public string ActionId { get; private set; }
@@ -153,34 +171,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
             public string Text
             {
                 get { return backingFields.Value.Text; }
-                set { /* Do nothing */ }
             }
 
-            public string Description
+            public ShortcutSequence VsShortcuts
             {
-                get { return null; }
-            }
-
-            public int? CustomVisualStudioId { get { return null; } }
-
-            public string[] VsShortcuts
-            {
-                get { return backingFields.Value.VsShortcuts; }
-            }
-
-            public string[] IdeaShortcuts
-            {
-                get { return null; }
-            }
-
-            public string DefaultShortcutText
-            {
-                get { return String.Empty; }
-            }
-
-            public ShortcutScope ShortcutScope
-            {
-                get { return ShortcutScope.Global; }
+                get { return backingFields.Value.VsShortcut; }
             }
 
             public string Path

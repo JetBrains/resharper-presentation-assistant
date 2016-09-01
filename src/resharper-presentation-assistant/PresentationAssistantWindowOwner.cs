@@ -3,6 +3,7 @@ using JetBrains.Application;
 using JetBrains.DataFlow;
 using JetBrains.Threading;
 using JetBrains.UI.PopupWindowManager;
+using JetBrains.UI.StdApplicationUI;
 using JetBrains.UI.Theming;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
@@ -16,15 +17,18 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly PresentationAssistantPopupWindowContext context;
         private readonly PopupWindowManager popupWindowManager;
         private readonly ITheming theming;
+        private readonly IWpfMainWindow mainWindow;
         private Action<Shortcut> showAction;
 
         public PresentationAssistantWindowOwner(Lifetime lifetime, IThreading threading,
-            PresentationAssistantPopupWindowContext context, PopupWindowManager popupWindowManager, ITheming theming)
+            PresentationAssistantPopupWindowContext context, PopupWindowManager popupWindowManager, ITheming theming,
+            IWpfMainWindow mainWindow)
         {
             this.threading = threading;
             this.context = context;
             this.popupWindowManager = popupWindowManager;
             this.theming = theming;
+            this.mainWindow = mainWindow;
 
             Enabled = new Property<bool>(lifetime, "PresentationAssistantWindow::Enabled");
             Enabled.WhenTrue(lifetime, EnableShortcuts);
@@ -42,6 +46,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             var popupWindowLifetimeDefinition = Lifetimes.Define(enabledLifetime, "PresentationAssistant::PopupWindow");
 
             var window = new PresentationAssistantWindow();
+            window.Owner = mainWindow.MainWpfWindow.Value;
+
 
             theming.PopulateResourceDictionary(popupWindowLifetimeDefinition.Lifetime, window.Resources);
 

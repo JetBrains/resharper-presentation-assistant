@@ -1,6 +1,12 @@
+using System.Linq;
 using JetBrains.ActionManagement;
+using JetBrains.Annotations;
 using JetBrains.Application;
-using JetBrains.ReSharper.Feature.Services.Util;
+using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion;
+using JetBrains.ReSharper.Feature.Services.LiveTemplates.Hotspots;
+using JetBrains.ReSharper.Feature.Services.StructuralNavigation;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.UI.ActionsRevised.Loader;
 using JetBrains.UI.ActionsRevised.Shortcuts;
 using JetBrains.UI.PopupMenu.Impl;
@@ -14,75 +20,124 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private readonly IActionShortcuts actionShortcuts;
         private readonly OverriddenShortcutFinder overriddenShortcutFinder;
-        private readonly ActionPresentationHelper actionPresentationHelper;
+        private readonly HotspotSessionExecutor hotspotSessionExecutor;
+        private StructuralNavigationManager structuralNavigationManager;
 
-        public ShortcutFactory(IActionShortcuts actionShortcuts, OverriddenShortcutFinder overriddenShortcutFinder,
-                               ActionPresentationHelper actionPresentationHelper)
+        public ShortcutFactory(IActionShortcuts actionShortcuts, OverriddenShortcutFinder overriddenShortcutFinder, HotspotSessionExecutor hotspotSessionExecutor)
         {
             this.actionShortcuts = actionShortcuts;
             this.overriddenShortcutFinder = overriddenShortcutFinder;
-            this.actionPresentationHelper = actionPresentationHelper;
+            this.hotspotSessionExecutor = hotspotSessionExecutor;
         }
 
-        public Shortcut Create(IActionDefWithId def, int multiplier)
+        public Shortcut Create(string actionId, string text, string path, int multiplier, [CanBeNull] IActionDefWithId def)
         {
+            Initialise();
+
+            if (actionId == "TextControl.Enter" && !IsHotspotActive() && !IsCodeCompletionActive())
+                return null;
+
             var shortcut = new Shortcut
             {
-                ActionId = def.ActionId,
-                Text = GetText(def),
-                Path = GetPath(def),
-                Description = def.Description,
+                ActionId = actionId,
+                Text = GetText(actionId, text),
+                Path = path,
                 CurrentScheme = actionShortcuts.CurrentScheme,
                 Multiplier = multiplier
             };
 
-            SetShortcuts(shortcut, def);
+            SetShortcuts(shortcut, actionId, def.VsShortcuts, def.IdeaShortcuts, def);
             return shortcut;
         }
 
-        private string GetPath(IActionDefWithId def)
+        private void Initialise()
         {
-            var actionWithPath = def as IActionWithPath;
-            var path = actionWithPath != null ? actionWithPath.Path : actionPresentationHelper.GetPathPresentationToRoot(def);
-
-            return !string.IsNullOrEmpty(path) ? MnemonicStore.RemoveMnemonicMark(path) + " \u2192 " : string.Empty;
+            // Can't initialise this through the constructor, appears to be a circular dependency
+            if (structuralNavigationManager == null)
+                structuralNavigationManager = Shell.Instance.GetComponent<StructuralNavigationManager>();
         }
 
-        private string GetText(IActionDefWithId def)
+        private bool IsHotspotActive()
         {
-            var text = MnemonicStore.RemoveMnemonicMark(def.Text).Trim(TrimCharacters);
-            text = string.IsNullOrEmpty(text) ? def.ActionId : text;
+            return hotspotSessionExecutor.CurrentSession != null;
+        }
 
-            switch (text)
+        private bool IsCodeCompletionActive()
+        {
+            var codeCompletionSessionManager = GetCodeCompletionSessionManager();
+            return codeCompletionSessionManager != null && codeCompletionSessionManager.HasActiveLookup();
+        }
+
+        private ICodeCompletionSessionManager GetCodeCompletionSessionManager()
+        {
+            var solutionOwners = Shell.Instance.GetComponents<ISolutionOwner>();
+            foreach (var solutionOwner in solutionOwners.OfType<SolutionManagerBase>())
             {
-                    // TODO: Maybe "Expand Live Template/Next hotspot"? Based on context
-                case "TextControl.Tab":
-                    text = "Tab";
+                var solution = solutionOwner.CurrentSolution;
+                if (solution != null)
+                {
+                    return solution.GetComponent<ICodeCompletionSessionManager>();
+                }
+            }
+            return null;
+        }
+
+        private string GetText(string actionId, string text)
+        {
+            var trim = MnemonicStore.RemoveMnemonicMark(text).Trim(TrimCharacters);
+            trim = string.IsNullOrEmpty(trim) ? actionId : trim;
+
+            switch (trim)
+            {
+                case "TextControl.Enter":
+                    if (IsHotspotActive())
+                        trim = "Next Hotspot";
+                    else if (IsCodeCompletionActive())
+                        trim = "Complete Item"; // TODO: Insert or replace?
                     break;
 
-                    // TODO: Maybe "Previous hotspot" if editing a Live Template
+                case "TextControl.Tab":
+                    // TODO: Expand live template
+                    // TODO: forward structural navigation
+                    if (IsHotspotActive())
+                        trim = "Next Hotspot";
+                    else if (IsCodeCompletionActive())
+                        trim = "Complete Item"; // TODO: Insert or replace?
+                    else if (structuralNavigationManager.IsSelectedByTabNavigation)
+                        trim = "Forward Structural Navigation";
+                    else
+                        trim = "Tab";
+                    break;
+
                 case "TabLeft":
-                    text = "Shift+Tab";
+                case "Tab Left":
+                    // TODO: backward structural navigation
+                    if (IsHotspotActive())
+                        trim = "Previous Hotspot";
+                    else if (structuralNavigationManager.IsSelectedByTabNavigation)
+                        trim = "Backward Structural Navigation";
+                    else
+                        trim = "Shift+Tab";
                     break;
             }
 
-            return text;
+            return trim;
         }
 
-        private void SetShortcuts(Shortcut shortcut, IActionDefWithId def)
+        private void SetShortcuts(Shortcut shortcut, string actionId, string[] vsShortcuts, string[] ideaShortcuts, [CanBeNull] IActionDefWithId def)
         {
             // TODO: Should this be an option in the options dialog? Show secondary scheme if different?
             const bool showSecondarySchemeIfSame = false;
 
-            SetGivenShortcuts(shortcut, def, showSecondarySchemeIfSame);
+            SetGivenShortcuts(shortcut, vsShortcuts, ideaShortcuts, showSecondarySchemeIfSame);
             SetVsOverriddenShortcuts(shortcut, def, showSecondarySchemeIfSame);
-            SetWellKnownShortcuts(shortcut, def, showSecondarySchemeIfSame);
+            SetWellKnownShortcuts(shortcut, actionId, showSecondarySchemeIfSame);
         }
 
-        private void SetGivenShortcuts(Shortcut shortcut, IActionDefWithId def, bool showSecondarySchemeIfSame)
+        private void SetGivenShortcuts(Shortcut shortcut, string[] vsShortcuts, string[] ideaShortcuts, bool showSecondarySchemeIfSame)
         {
-            shortcut.VsShortcut = GetFirstShortcutSequence(def.VsShortcuts);
-            shortcut.IntellijShortcut = GetFirstShortcutSequence(def.IdeaShortcuts);
+            shortcut.VsShortcut = GetFirstShortcutSequence(vsShortcuts);
+            shortcut.IntellijShortcut = GetFirstShortcutSequence(ideaShortcuts);
 
             if (HasSameShortcuts(shortcut) && !showSecondarySchemeIfSame)
                 shortcut.IntellijShortcut = null;
@@ -152,10 +207,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 shortcut.IntellijShortcut = null;
         }
 
-        private void SetWellKnownShortcuts(Shortcut shortcut, IActionDefWithId def,
+        private void SetWellKnownShortcuts(Shortcut shortcut, string actionId,
             bool showSecondarySchemeIfSame)
         {
-            switch (def.ActionId)
+            switch (actionId)
             {
                     // The Escape action doesn't have a bound shortcut, or a VS override
                 case "Escape":
@@ -165,6 +220,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                     // Only happens when we're tabbing around hotspots in Live Templates. Useful to show
                 case "TextControl.Tab":
                     shortcut.VsShortcut = GetShortcutSequence("Tab");
+                    break;
+
+                case "TextControl.Enter":
+                    shortcut.VsShortcut = GetShortcutSequence("Enter");
                     break;
 
                     // The shortcuts for the overridden VS "go to" commands come from the current

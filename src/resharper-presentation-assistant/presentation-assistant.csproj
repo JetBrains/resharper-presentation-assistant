@@ -355,9 +355,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionFinder.cs" />
     <Compile Include="ActionIdBlacklist.cs" />
     <Compile Include="BasePopupWindow.cs" />
+    <Compile Include="IShortcutProvider.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="FadingWpfPopupWindow.cs" />
     <Compile Include="KeyConverter.cs" />
@@ -367,6 +367,10 @@
     <Compile Include="OverriddenShortcutFinder.cs" />
     <Compile Include="PresentationAssistantSettings.cs" />
     <Compile Include="PresentationAssistantSettingsStore.cs" />
+    <Compile Include="ReSharperActionShortcutProvider.cs" />
+    <Compile Include="ShortcutDisplayStatistics.cs" />
+    <Compile Include="ShortcutProvider.cs" />
+    <Compile Include="SyntheticActionShortcutProvider.cs" />
     <Compile Include="VisualStudio\PresentationAssistantVsThemeColor.cs" />
     <Compile Include="PresentationAssistantWindow.xaml.cs">
       <DependentUpon>PresentationAssistantWindow.xaml</DependentUpon>
@@ -378,7 +382,7 @@
     <Compile Include="VisualStudio\ZoneMarker.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="VisualStudio\VsActionFinder.cs" />
+    <Compile Include="VisualStudio\VsCommandShortcutProvider.cs" />
     <Compile Include="VisualStudio\VsShortcutFinder.cs" />
     <Compile Include="WpfPopupWindow.cs" />
     <Compile Include="ZoneMarker.cs" />

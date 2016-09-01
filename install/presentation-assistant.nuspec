@@ -9,6 +9,8 @@
     <description>Shows the name and keyboard shortcuts of invoked actions.</description>
     <summary>Shows the name and keyboard shortcuts of invoked actions.</summary>
     <releaseNotes>
+&#8226; Show "insert" or "replace" for code completion
+&#8226; Show tab handler overrides, e.g. next hotspot, structural navigation
 &#8226; Support for ReSharper 2016.2 (#18)
 
 From 2.4.0:
