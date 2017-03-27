@@ -9,6 +9,8 @@
   <PropertyGroup>
      <TargetFramework>net45</TargetFramework>
      <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+     <AssemblyName>JetBrains.ReSharper.Plugins.PresentationAssistant</AssemblyName>
      <RootNamespace>JetBrains.ReSharper.Plugins.PresentationAssistant</RootNamespace>
   </PropertyGroup>
 
