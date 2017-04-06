@@ -3,7 +3,7 @@
   <metadata>
     <id>JetBrains.PresentationAssistant</id>
     <title>Presentation Assistant</title>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
     <authors>JetBrains</authors>
     <owners>JetBrains</owners>
     <description>Shows the name and keyboard shortcuts of invoked actions.</description>
@@ -27,7 +27,7 @@ From 2.3.1:
     <copyright>Copyright 2015 JetBrains, s.r.o</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Wave" version="[7.0]" />
+      <dependency id="Wave" version="[8.0]" />
     </dependencies>
     <tags>resharper presentation assistant keymap</tags>
   </metadata>
