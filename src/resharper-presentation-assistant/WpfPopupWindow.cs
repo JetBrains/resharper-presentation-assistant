@@ -4,7 +4,7 @@ using JetBrains.Application.UI.CrossFramework;
 using JetBrains.DataFlow;
 using JetBrains.UI;
 using JetBrains.UI.PopupWindowManager;
-using JetBrains.Util.Interop;
+using JetBrains.UI.Utils;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
@@ -39,7 +39,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             {
                 // Setting this causes the Layouter to compute a new LayoutResult and
                 // we get notified via OnLayouterResultChanged
-                Layouter.Size.Value = window.DesiredSize.ToWinFormsSize(DpiResolution.CurrentScreenDpi);
+                var dpiResolution = DpiResolutions.FromAvalonElement(window);
+                Layouter.Size.Value = window.DesiredSize.ToWinFormsSize(dpiResolution);
                 // TODO: Should we check to see if the layouter gives us a different size, then re-measure?
             }
         }
@@ -47,7 +48,8 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         // Note that this can be called if e.g. the Layouter's AnchoringRect changes
         protected override void OnLayouterResultChanged(PropertyChangedEventArgs<LayoutResult> args)
         {
-            var location = args.New.Bounds.ToAvalonRect(DpiResolution.CurrentScreenDpi);
+            var dpiResolution = DpiResolutions.FromAvalonElement(window);
+            var location = args.New.Bounds.ToAvalonRect(dpiResolution);
             window.Top = location.Top;
             window.Left = location.Left;
         }

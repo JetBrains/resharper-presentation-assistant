@@ -62,7 +62,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 Multiplier = statistics.Multiplier
             };
         }
-        
+
         private CommandBarActionDef Find(string actionId)
         {
             var cache = GetCachedActionDefs();
@@ -208,9 +208,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                     children = tuple.Item1.Controls.OfType<CommandBarControl>().ToList();
 
                     // EnqueueJob child containers
-                    children.OfType<CommandBarPopup>()
-                        .Select(popup => Tuple.Create(popup.CommandBar, tuple.Item2.Concat(popup).ToArray()))
-                        .ForEach(queueEnumChildren.Enqueue);
+                    var popups = children.OfType<CommandBarPopup>()
+                        .Select(popup => Tuple.Create(popup.CommandBar, tuple.Item2.Concat(popup).ToArray()));
+                    foreach (var popup in popups)
+                        queueEnumChildren.Enqueue(popup);
                 }
                 catch (Exception e)
                 {

@@ -5,6 +5,7 @@ using JetBrains.DataFlow;
 using JetBrains.UI;
 using JetBrains.UI.Application;
 using JetBrains.UI.PopupWindowManager;
+using JetBrains.UI.Utils;
 using JetBrains.Util.Interop;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
@@ -34,8 +35,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             var dispositions = new[] {new Anchoring2D(Anchoring.MiddleWithin, Anchoring.FarWithin)};
 
             // Padding is in pixels...
-            var padding = 75.0/DpiResolution.DeviceIndependent96DpiValue*DpiResolution.CurrentScreenDpi.DpiY;
-            return new DockingLayouter(lifetime, anchor, dispositions, (int)padding);
+            unsafe
+            {
+                var dpi = DpiResolutions.FromHWnd((void*) mainWindow.GetPrimaryWindow().Handle);
+                var padding = 75.0/DpiResolution.DeviceIndependent96DpiValue*dpi.DpiY;
+                return new DockingLayouter(lifetime, anchor, dispositions, (int)padding);
+            }
         }
     }
 }
