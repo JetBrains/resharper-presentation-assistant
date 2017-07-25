@@ -1,7 +1,8 @@
-﻿using JetBrains.ActionManagement;
-using JetBrains.Application.DataContext;
+﻿using JetBrains.Application.DataContext;
+using JetBrains.Application.UI.Actions;
+using JetBrains.Application.UI.ActionsRevised.Menu;
+using JetBrains.Application.UI.ActionSystem.ActionsRevised.Menu;
 using JetBrains.ReSharper.Feature.Services.Menu;
-using JetBrains.UI.ActionsRevised;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {

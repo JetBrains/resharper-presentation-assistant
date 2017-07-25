@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media.Animation;
+using JetBrains.Application.UI.PopupLayout;
+using JetBrains.Application.UI.WindowManagement;
 using JetBrains.DataFlow;
-using JetBrains.UI.PopupWindowManager;
+using JetBrains.UI.PopupLayout;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {

@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using JetBrains.Application;
+using JetBrains.Application.UI.Components.Theming;
 using JetBrains.UI.Components.Theming;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
