@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using JetBrains.ActionManagement;
+using JetBrains.Application.Shortcuts;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {

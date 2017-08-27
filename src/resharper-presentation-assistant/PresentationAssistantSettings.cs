@@ -1,4 +1,5 @@
 ﻿using JetBrains.Application.Settings;
+using JetBrains.Application.UI.Utils;
 using JetBrains.UI;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant

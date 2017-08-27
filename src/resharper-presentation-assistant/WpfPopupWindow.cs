@@ -1,9 +1,10 @@
 using System;
 using System.Windows;
 using JetBrains.Application.UI.CrossFramework;
+using JetBrains.Application.UI.PopupLayout;
+using JetBrains.Application.UI.WindowManagement;
 using JetBrains.DataFlow;
-using JetBrains.UI;
-using JetBrains.UI.PopupWindowManager;
+using JetBrains.UI.PopupLayout;
 using JetBrains.UI.Utils;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant

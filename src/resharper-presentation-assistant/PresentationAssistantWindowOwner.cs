@@ -1,8 +1,10 @@
 ﻿using System;
 using JetBrains.Application;
+using JetBrains.Application.Threading;
+using JetBrains.Application.UI.Components.Theming;
 using JetBrains.DataFlow;
 using JetBrains.Threading;
-using JetBrains.UI.PopupWindowManager;
+using JetBrains.UI.PopupLayout;
 using JetBrains.UI.StdApplicationUI;
 using JetBrains.UI.Theming;
 

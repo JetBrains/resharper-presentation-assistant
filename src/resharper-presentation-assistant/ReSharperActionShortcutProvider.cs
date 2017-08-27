@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Linq;
-using JetBrains.ActionManagement;
 using JetBrains.Application;
 using JetBrains.Application.Settings;
-using JetBrains.Application.Settings.Store.Implementation;
+using JetBrains.Application.Settings.Implementation;
+using JetBrains.Application.Shortcuts;
+using JetBrains.Application.UI.ActionsRevised.Loader;
+using JetBrains.Application.UI.ActionsRevised.Shortcuts;
+using JetBrains.Application.UI.Controls.JetPopupMenu.Detail;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Settings;
@@ -11,9 +14,6 @@ using JetBrains.ReSharper.Feature.Services.LiveTemplates.Hotspots;
 using JetBrains.ReSharper.Feature.Services.Lookup;
 using JetBrains.ReSharper.Feature.Services.Util;
 using JetBrains.ReSharper.Resources.Shell;
-using JetBrains.UI.ActionsRevised.Loader;
-using JetBrains.UI.ActionsRevised.Shortcuts;
-using JetBrains.UI.PopupMenu.Impl;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {

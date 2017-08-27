@@ -1,6 +1,6 @@
-﻿using JetBrains.ActionManagement;
-using JetBrains.Application;
-using JetBrains.UI.ActionsRevised.Loader;
+﻿using JetBrains.Application;
+using JetBrains.Application.Shortcuts;
+using JetBrains.Application.UI.ActionsRevised.Loader;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Application;
+using JetBrains.Application.UI.Components.Theming;
 using JetBrains.Platform.VisualStudio.SinceVs11.Shell.Theming;
 using JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio;
 using JetBrains.UI.Components.Theming;

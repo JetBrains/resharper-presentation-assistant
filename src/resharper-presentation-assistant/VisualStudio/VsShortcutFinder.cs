@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using EnvDTE;
-using JetBrains.ActionManagement;
 using JetBrains.Application;
-using JetBrains.Threading;
-using JetBrains.UI.ActionsRevised.Loader;
+using JetBrains.Application.Shortcuts;
+using JetBrains.Application.Threading;
+using JetBrains.Application.UI.ActionsRevised.Loader;
 using JetBrains.VsIntegration.Shell.ActionManagement;
 using JetBrains.VsIntegration.Shell.Actions.Revised;
 

@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
-using JetBrains.ActionManagement;
 using JetBrains.Application;
-using JetBrains.UI.ActionsRevised.Shortcuts;
+using JetBrains.Application.Shortcuts;
+using JetBrains.Application.UI.ActionsRevised.Shortcuts;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {

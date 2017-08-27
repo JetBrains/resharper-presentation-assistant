@@ -1,6 +1,7 @@
 ﻿using JetBrains.Application;
 using JetBrains.Application.ActivityTrackingNew;
 using JetBrains.Application.Parts;
+using JetBrains.Application.Threading;
 using JetBrains.DataFlow;
 using JetBrains.Threading;
 

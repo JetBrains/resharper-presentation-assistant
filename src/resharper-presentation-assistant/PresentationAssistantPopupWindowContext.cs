@@ -1,10 +1,13 @@
-﻿using JetBrains.ActionManagement;
-using JetBrains.Application;
+﻿using JetBrains.Application;
 using JetBrains.Application.Interop.NativeHook;
+using JetBrains.Application.StdApplicationUI;
+using JetBrains.Application.UI.Actions.ActionManager;
+using JetBrains.Application.UI.PopupLayout;
+using JetBrains.Application.UI.WindowManagement;
 using JetBrains.DataFlow;
 using JetBrains.UI;
 using JetBrains.UI.Application;
-using JetBrains.UI.PopupWindowManager;
+using JetBrains.UI.StdApplicationUI;
 using JetBrains.UI.Utils;
 using JetBrains.Util.Interop;
 
