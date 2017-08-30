@@ -1,3 +1,5 @@
+[![official JetBrains project](http://jb.gg/badges/official-flat-square.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+
 # Presentation Assistant for ReSharper
 
 Presentation Assistant is an extension for ReSharper 2016.1, 10, 9.2, 9.1 and 9.0 that will display the keyboard shortcuts for the currently executing action. Useful for demos, but also handy for pair programming - easily answer those "how did you do that?" questions.
