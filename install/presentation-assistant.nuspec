@@ -3,43 +3,25 @@
   <metadata>
     <id>JetBrains.PresentationAssistant</id>
     <title>Presentation Assistant</title>
-    <version>2.8.0</version>
+    <version>$version$</version>
     <authors>JetBrains</authors>
     <owners>JetBrains</owners>
     <description>Shows the name and keyboard shortcuts of invoked actions.</description>
     <summary>Shows the name and keyboard shortcuts of invoked actions.</summary>
-    <releaseNotes>&#8226; Support for ReSharper 2017.2
-
-From 2.7.0:
-&#8226; Support for ReSharper 2017.1
-
-From 2.6.0:
-&#8226; Support for ReSharper 2016.3
-
-From 2.5.0:
-&#8226; Show "insert" or "replace" for code completion
-&#8226; Show tab handler overrides, e.g. next hotspot, structural navigation
-&#8226; Support for ReSharper 2016.2 (#18)
-
-From 2.4.0:
-&#8226; Support for ReSharper 2016.1 (#15, #16)
-
-From 2.3.1:
-&#8226; Persist state across restarts (#12)
-    </releaseNotes>
+    <releaseNotes>$releasenotes$</releaseNotes>
     <projectUrl>https://github.com/JetBrains/resharper-presentation-assistant</projectUrl>
-    <licenseUrl>https://raw.githubusercontent.com/JetBrains/resharper-presentaton-assistant/license.txt</licenseUrl>
+    <licenseUrl>https://github.com/JetBrains/resharper-presentation-assistant/blob/master/LICENSE</licenseUrl>
     <iconUrl>http://resharper-plugins.jetbrains.com/Content/Images/packageReSharper.png</iconUrl>
-    <copyright>Copyright 2015 JetBrains, s.r.o</copyright>
+    <copyright>Copyright $currentyear$ JetBrains, s.r.o</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <dependencies>
-      <dependency id="Wave" version="[9.0]" />
+      <dependency id="Wave" version="[$wave$]" />
     </dependencies>
     <tags>resharper presentation assistant keymap</tags>
   </metadata>
   <files>
     <!-- Plugin -->
-    <file src="..\src\resharper-presentation-assistant\bin\Release\JetBrains.ReSharper.Plugins.PresentationAssistant.dll"
+    <file src="..\src\resharper-presentation-assistant\bin\$configuration$\JetBrains.ReSharper.Plugins.PresentationAssistant.dll"
           target="DotFiles" />
   </files>
 </package>
