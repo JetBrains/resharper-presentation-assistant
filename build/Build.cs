@@ -49,13 +49,6 @@ class Build : NukeBuild
                         .AssertZeroExitCode();
             });
 
-    Target Update => _ => _
-            .OnlyWhen(() => GitRepository.Branch.EqualsOrdinalIgnoreCase("sdk-update"))
-            .Executes(() =>
-            {
-                UpdateToLatestVersion(ProjectFile, "JetBrains.Platform.VisualStudio");
-            });
-
     Target Clean => _ => _
             .Executes(() =>
             {
@@ -64,7 +57,7 @@ class Build : NukeBuild
             });
 
     Target Restore => _ => _
-            .DependsOn(Clean, Update)
+            .DependsOn(Clean)
             .Executes(() =>
             {
                 MSBuild(s => DefaultMSBuildRestore);
@@ -110,13 +103,6 @@ class Build : NukeBuild
                                 .SetSource(Source)
                                 .SetApiKey(ApiKey)));
             });
-
-    public static void UpdateToLatestVersion (string projectFile, string packageId)
-    {
-        var content = HttpDownloadString($"https://api.nuget.org/v3/flatcontainer/{packageId.ToLowerInvariant()}/index.json");
-        var latestVersion = JsonDeserialize<JObject>(content)["versions"].Last.ToString();
-        XmlPoke(projectFile, $"//PackageReference[@Include='{packageId}']/@Version", latestVersion);
-    }
 
     static string GetWaveVersion (string projectFile)
     {
