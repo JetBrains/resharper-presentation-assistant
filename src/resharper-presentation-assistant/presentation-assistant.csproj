@@ -27,8 +27,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Platform.VisualStudio" Version="109.0.20170824.131327" />
-    <PackageReference Include="JetBrains.ReSharper.SDK" Version="2017.2.0" />
+    <PackageReference Include="JetBrains.ReSharper.SDK" Version="2017.3.0-eap*" />
+    <PackageReference Include="JetBrains.Platform.VisualStudio" Version="111.0.20171207.131226-eap09" />
     <PackageReference Include="Microsoft.VisualStudio.CommandBars" Version="8.0.0" />
     <PackageReference Include="VSSDK.Shell.11" Version="11.0.4" />
     <PackageReference Include="VSSDK.Shell.Immutable.11" Version="11.0.4" />
