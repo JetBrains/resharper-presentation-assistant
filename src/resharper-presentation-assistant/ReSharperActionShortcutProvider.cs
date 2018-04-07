@@ -4,6 +4,7 @@ using JetBrains.Application;
 using JetBrains.Application.Settings;
 using JetBrains.Application.Settings.Implementation;
 using JetBrains.Application.Shortcuts;
+using JetBrains.Application.UI.Actions.Utils;
 using JetBrains.Application.UI.ActionsRevised.Loader;
 using JetBrains.Application.UI.ActionsRevised.Shortcuts;
 using JetBrains.Application.UI.Controls.JetPopupMenu.Detail;

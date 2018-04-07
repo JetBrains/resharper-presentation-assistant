@@ -64,7 +64,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
         private static ActionShortcut ToActionShortcut(string binding)
         {
             var length = binding.IndexOf("::", StringComparison.Ordinal);
-            return ShortcutUtil.BindingsToShortcut(length > 0 ? binding.Substring(length + 2) : binding);
+            return ShortcutUtil.BindingsToShortcut(length > 0 ? binding.Substring(length + 2) : binding, onerror: null);
         }
 
         private string GetFirstBinding(object o)
