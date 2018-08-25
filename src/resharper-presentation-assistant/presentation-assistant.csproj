@@ -7,7 +7,7 @@
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
-     <TargetFramework>net45</TargetFramework>
+     <TargetFramework>net461</TargetFramework>
      <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
      <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
      <AssemblyName>JetBrains.ReSharper.Plugins.PresentationAssistant</AssemblyName>
@@ -27,7 +27,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.ReSharper.SDK" Version="2018.1.0-*" />
+    <PackageReference Include="JetBrains.ReSharper.SDK" Version="2018.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.CommandBars" Version="8.0.0" />
     <PackageReference Include="VSSDK.Shell.11" Version="11.0.4" />
     <PackageReference Include="VSSDK.Shell.Immutable.11" Version="11.0.4" />
