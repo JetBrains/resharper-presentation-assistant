@@ -3,9 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = ".build", "..\build\.build.csproj", "{743956BC-4517-4E42-B318-EB641E7AF2B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{743956BC-4517-4E42-B318-EB641E7AF2B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "presentation-assistant", "resharper-presentation-assistant\presentation-assistant.csproj", "{4B3745C2-BE68-42A5-AC71-3AE7FF54BE03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "presentation-assistant", "src\resharper-presentation-assistant\presentation-assistant.csproj", "{4B3745C2-BE68-42A5-AC71-3AE7FF54BE03}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{E4598118-B504-4590-8CC0-172AD3EF9BAB}"
+ProjectSection(SolutionItems) = preProject
+	README.md = README.md
+	LICENSE = LICENSE
+	CHANGELOG.md = CHANGELOG.md
+	.gitattributes = .gitattributes
+	.gitignore = .gitignore
+	install\presentation-assistant.nuspec = install\presentation-assistant.nuspec
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

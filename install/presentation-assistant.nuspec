@@ -21,7 +21,7 @@
   </metadata>
   <files>
     <!-- Plugin -->
-    <file src="..\src\resharper-presentation-assistant\bin\$configuration$\JetBrains.ReSharper.Plugins.PresentationAssistant.dll"
+    <file src="src\resharper-presentation-assistant\bin\$configuration$\JetBrains.ReSharper.Plugins.PresentationAssistant.dll"
           target="DotFiles" />
   </files>
 </package>
