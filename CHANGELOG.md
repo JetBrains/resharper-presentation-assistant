@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## vNext
 
+## [2019.1.0] / 2019-04-30
+- Support for ReSharper 2019.1
+
 ## [2018.3.0] / 2018-12-18
 - Support for ReSharper 2018.3
 
@@ -41,7 +44,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## 2.3.1
 - Persist state across restarts (#12)
 
-[vNext]: https://github.com/JetBrains/resharper-presentation-assistant/compare/2018.3.0...HEAD
+[vNext]: https://github.com/JetBrains/resharper-presentation-assistant/compare/2019.1.0...HEAD
+[2019.1.0]: https://github.com/JetBrains/resharper-presentation-assistant/compare/2018.3.0...2019.1.0
 [2018.3.0]: https://github.com/JetBrains/resharper-presentation-assistant/compare/2018.2.0...2018.3.0
 [2018.2.0]: https://github.com/JetBrains/resharper-presentation-assistant/compare/2018.1.0...2018.2.0
 [2018.1.0]: https://github.com/JetBrains/resharper-presentation-assistant/compare/2017.3.3...2018.1.0
