@@ -3,6 +3,7 @@ using JetBrains.Application;
 using JetBrains.Application.Threading;
 using JetBrains.Application.UI.Components.Theming;
 using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 using JetBrains.Threading;
 using JetBrains.UI.PopupLayout;
 using JetBrains.UI.StdApplicationUI;
@@ -45,7 +46,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private void EnableShortcuts(Lifetime enabledLifetime)
         {
-            var popupWindowLifetimeDefinition = Lifetimes.Define(enabledLifetime, "PresentationAssistant::PopupWindow");
+            var popupWindowLifetimeDefinition = Lifetime.Define(enabledLifetime, "PresentationAssistant::PopupWindow");
 
             var window = new PresentationAssistantWindow();
             window.Owner = mainWindow.MainWpfWindow.Value;
@@ -63,14 +64,14 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 window.SetShortcut(shortcut);
                 popupWindow.ShowWindow();
 
-                visibilityLifetimes.DefineNext((visibleLifetimeDefinition, visibleLifetime) =>
+                visibilityLifetimes.DefineNext(visibleLifetime =>
                 {
                     // Hide the window after a timespan, and queue it on the visible sequential lifetime so
                     // that the timer is cancelled when we want to show a new shortcut. Don't hide the window
                     // by attaching it to the sequential lifetime, as that will cause the window to hide when
                     // we need to show a new shortcut. But, make sure we do terminate the lifetime so that
                     // the topmost timer hack is stopped when this window is not visible
-                    threading.TimedActions.Queue(visibleLifetime, "PresentationAssistantWindow::HideWindow",
+                    threading.TimedActions.Queue(visibleLifetime.Lifetime, "PresentationAssistantWindow::HideWindow",
                         () => popupWindow.HideWindow(), VisibleTimeSpan,
                         TimedActionsHost.Recurrence.OneTime, Rgc.Invariant);
                 });

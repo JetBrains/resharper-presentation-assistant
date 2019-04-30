@@ -2,6 +2,7 @@ using JetBrains.Application;
 using JetBrains.Application.DataContext;
 using JetBrains.Application.Settings;
 using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {

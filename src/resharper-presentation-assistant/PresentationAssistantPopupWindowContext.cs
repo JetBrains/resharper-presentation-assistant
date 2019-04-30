@@ -5,6 +5,7 @@ using JetBrains.Application.UI.Actions.ActionManager;
 using JetBrains.Application.UI.PopupLayout;
 using JetBrains.Application.UI.WindowManagement;
 using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
 using JetBrains.UI;
 using JetBrains.UI.Application;
 using JetBrains.UI.StdApplicationUI;

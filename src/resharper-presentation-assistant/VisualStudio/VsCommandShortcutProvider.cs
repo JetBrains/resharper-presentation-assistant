@@ -9,6 +9,8 @@ using JetBrains.Application;
 using JetBrains.Application.UI.ActionsRevised.Shortcuts;
 using JetBrains.Application.UI.Controls.JetPopupMenu.Detail;
 using JetBrains.DataFlow;
+using JetBrains.Diagnostics;
+using JetBrains.Lifetimes;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.Shell;
