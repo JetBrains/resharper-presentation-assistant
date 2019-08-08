@@ -81,6 +81,7 @@ class Build : NukeBuild
         });
 
     Target Changelog => _ => _
+        .Before(Pack)
         .OnlyWhenStatic(() => !Version.Contains("-"))
         .Executes(() =>
         {
@@ -93,7 +94,7 @@ class Build : NukeBuild
 
     Target Push => _ => _
         .DependsOn(Pack, Changelog)
-        .Requires(() => ExtractChangelogSectionNotes(ChangelogFile, "vNext").Any())
+        .Requires(() => ExtractChangelogSectionNotes(ChangelogFile, Version).Any())
         .Requires(() => ApiKey)
         .Requires(() => Configuration.EqualsOrdinalIgnoreCase("Release"))
         .Executes(() =>
