@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <SdkVersion>2019.3.0</SdkVersion>
+
+    <PackageId>JetBrains.PresentationAssistant</PackageId>
+    <Title>Presentation Assistant</Title>
+    <Description>Shows the name and keyboard shortcuts of invoked actions.</Description>
+
+    <Authors>JetBrains</Authors>
+    <Copyright>Copyright $([System.DateTime]::Now.Year) JetBrains, s.r.o</Copyright>
+    <PackageTags>resharper plugin presentation assistant keymap</PackageTags>
+
+    <PackageProjectUrl>https://github.com/JetBrains/resharper-presentation-assistant</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/JetBrains/resharper-presentation-assistant/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>http://resharper-plugins.jetbrains.com/Content/Images/packageReSharper.png</PackageIconUrl>
+  </PropertyGroup>
+</Project>
