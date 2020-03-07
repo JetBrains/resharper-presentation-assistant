@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <SdkVersion>2019.3.0</SdkVersion>
+    <SdkVersion>2020.1.0-eap02</SdkVersion>
 
     <PackageId>JetBrains.PresentationAssistant</PackageId>
     <Title>Presentation Assistant</Title>
