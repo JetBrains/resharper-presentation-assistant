@@ -77,7 +77,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                 });
             };
 
-            enabledLifetime.AddAction(() =>
+            enabledLifetime.OnTermination(() =>
             {
                 showAction = _ => { };
             });

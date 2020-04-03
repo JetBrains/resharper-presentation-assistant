@@ -13,15 +13,16 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             "TextControl.Paste",
             "TextControl.Copy",
 
-            // Used when code completion window is visible
+            "TextControl.Left", "TextControl.Right",
+            "TextControl.Left.Selection", "TextControl.Right.Selection",
             "TextControl.Up", "TextControl.Down",
+            "TextControl.Up.Selection", "TextControl.Down.Selection",
+            "TextControl.Home", "TextControl.End",
+            "TextControl.Home.Selection", "TextControl.End.Selection",
             "TextControl.PageUp", "TextControl.PageDown",
-
-            // If camel humps are enabled in the editor
-            "TextControl.PreviousWord",
-            "TextControl.PreviousWord.Selection",
-            "TextControl.NextWord",
-            "TextControl.NextWord.Selection",
+            "TextControl.PageUp.Selection", "TextControl.PageDown.Selection",
+             "TextControl.PreviousWord", "TextControl.NextWord",
+            "TextControl.PreviousWord.Selection", "TextControl.NextWord.Selection",
 
             // VS commands, not R# commands
             "Edit.Up", "Edit.Down", "Edit.Left", "Edit.Right", "Edit.PageUp", "Edit.PageDown",
