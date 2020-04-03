@@ -2,9 +2,7 @@
 using JetBrains.Application.ActivityTrackingNew;
 using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
-using JetBrains.DataFlow;
 using JetBrains.Lifetimes;
-using JetBrains.Threading;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {

@@ -3,7 +3,6 @@ using JetBrains.Application.UI.PopupLayout;
 using JetBrains.Application.UI.WindowManagement;
 using JetBrains.DataFlow;
 using JetBrains.Lifetimes;
-using JetBrains.UI;
 using JetBrains.UI.PopupLayout;
 using JetBrains.Util.Logging;
 
@@ -38,7 +37,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
             this.hideFlags = hideFlags;
 
-            lifetime.AddAction(() =>
+            lifetime.OnTermination(() =>
             {
                 if (!Visible)
                 {
@@ -46,13 +45,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
                     return;
                 }
 
-                EventHandler handle = null;
-                handle = (sender, args) =>
+                void Handle(object sender, EventArgs args)
                 {
                     CloseWindowCore();
-                    Closed -= handle;
-                };
-                Closed += handle;
+                    Closed -= Handle;
+                }
+
+                Closed += Handle;
                 HideWindow();
             });
         }
@@ -61,12 +60,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         protected void AttachEvents(PopupWindowManager popupWindowManager)
         {
-            lifetime.AddAction(DetachEvents);
+            lifetime.OnTermination(DetachEvents);
 
             var context = Context;
             if (context != null)
             {
-                lifetime.AddBracket(() => Layouter = context.CreateLayouter(lifetime), () => Layouter = null);
+                lifetime.Bracket(() => Layouter = context.CreateLayouter(lifetime), () => Layouter = null);
                 Layouter?.Layout.Change.Advise_HasNew(lifetime, OnLayouterResultChanged);
 
                 context.AnyOtherAction += OnContextOwnerAnyActionPerformed;
@@ -170,7 +169,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public IPopupWindowContext Context { get; }
         public FormHideMethod HideMethod { get; set; }
 
-        public bool IsDisposed => lifetimeDefinition.IsTerminated;
+        public bool IsDisposed => lifetimeDefinition.Status != LifetimeStatus.Alive;
 
         public abstract PopupWindowLayoutMode LayoutMode { get; set; }
         public PopupWindowMutex Mutex { get; }

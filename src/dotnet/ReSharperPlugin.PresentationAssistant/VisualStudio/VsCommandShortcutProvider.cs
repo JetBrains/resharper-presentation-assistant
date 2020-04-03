@@ -8,7 +8,6 @@ using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.UI.ActionsRevised.Shortcuts;
 using JetBrains.Application.UI.Controls.JetPopupMenu.Detail;
-using JetBrains.DataFlow;
 using JetBrains.Diagnostics;
 using JetBrains.Lifetimes;
 using JetBrains.Util;
@@ -182,7 +181,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
     {
         /// <summary>
         /// Does BFS on descendant controls and command bars of a command bar.
-        /// Each returned item is the descandant control plus an array of its parents, top to bottom.
+        /// Each returned item is the descendant control plus an array of its parents, top to bottom.
         /// </summary>
         [NotNull]
         public static IEnumerable<Tuple<CommandBarControl, CommandBarPopup[]>> EnumDescendantControls(

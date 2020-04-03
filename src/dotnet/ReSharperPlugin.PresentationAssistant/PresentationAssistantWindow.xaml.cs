@@ -17,18 +17,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
     public static class SampleData
     {
-        public static Shortcut SimpleShortcut
-        {
-            get
+        public static Shortcut SimpleShortcut =>
+            new Shortcut
             {
-                return new Shortcut
-                {
-                    Text = "Highlight Usages in File",
-                    VsShortcut = new ShortcutSequence(new ShortcutDetails("F11", KeyboardModifiers.Shift | KeyboardModifiers.Alt)),
-                    IntellijShortcut = new ShortcutSequence(new ShortcutDetails("F7", KeyboardModifiers.Control | KeyboardModifiers.Shift))
-                };
-            }
-        }
+                Text = "Highlight Usages in File",
+                VsShortcut = new ShortcutSequence(new ShortcutDetails("F11", KeyboardModifiers.Shift | KeyboardModifiers.Alt)),
+                IntellijShortcut = new ShortcutSequence(new ShortcutDetails("F7", KeyboardModifiers.Control | KeyboardModifiers.Shift))
+            };
 
         public static Shortcut ChordShortcut
         {
@@ -44,18 +39,13 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             }
         }
 
-        public static Shortcut MultiplierShortcut
-        {
-            get
+        public static Shortcut MultiplierShortcut =>
+            new Shortcut
             {
-                return new Shortcut
-                {
-                    Text = "Highlight Usages in File",
-                    VsShortcut = new ShortcutSequence(new ShortcutDetails("F11", KeyboardModifiers.Shift | KeyboardModifiers.Alt)),
-                    IntellijShortcut = new ShortcutSequence(new ShortcutDetails("F7", KeyboardModifiers.Control | KeyboardModifiers.Shift)),
-                    Multiplier = 2
-                };
-            }
-        }
+                Text = "Highlight Usages in File",
+                VsShortcut = new ShortcutSequence(new ShortcutDetails("F11", KeyboardModifiers.Shift | KeyboardModifiers.Alt)),
+                IntellijShortcut = new ShortcutSequence(new ShortcutDetails("F7", KeyboardModifiers.Control | KeyboardModifiers.Shift)),
+                Multiplier = 2
+            };
     }
 }
