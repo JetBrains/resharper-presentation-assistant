@@ -57,7 +57,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         // get reported by ActionEvents
         public void TrackAction(string actionId)
         {
-            if (!enabled || ActionIdBlacklist.IsBlacklisted(actionId))
+            if (!enabled || ActionIdBlocklist.IsBlocked(actionId))
                 return;
 
             OnAction(actionId);
@@ -67,7 +67,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         {
             if (!enabled 
                 || activityGroup != "VsAction"
-                || ActionIdBlacklist.IsBlacklisted(activityId))
+                || ActionIdBlocklist.IsBlocked(activityId))
             {
                 return;
             }

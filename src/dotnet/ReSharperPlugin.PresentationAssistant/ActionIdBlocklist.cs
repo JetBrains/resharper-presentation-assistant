@@ -2,7 +2,7 @@
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
-    public static class ActionIdBlacklist
+    public static class ActionIdBlocklist
     {
         private static readonly HashSet<string> ActionIds = new HashSet<string>
         {
@@ -32,7 +32,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             PresentationAssistantAction.ActionId
         };
 
-        public static bool IsBlacklisted(string actionId)
+        public static bool IsBlocked(string actionId)
         {
             return ActionIds.Contains(actionId);
         }
