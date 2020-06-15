@@ -21,21 +21,7 @@
     <PackageReference Include="VSSDK.Shell.11" Version="11.0.4" PrivateAssets="all" />
     <PackageReference Include="VSSDK.Shell.Immutable.11" Version="11.0.4" PrivateAssets="all" />
     <!-- TODO: https://github.com/NuGet/Home/issues/7154 -->
-    <PackageReference Include="Wave" Version="$(WaveVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="**\*.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-
-    <Compile Remove="ComplexityErrorGutterMark.cs" />
-    <Compile Remove="ComplexityWarningGutterMark.cs" />
+    <PackageReference Include="Wave" Version="[$(WaveVersion)]" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,11 +29,25 @@
     <None Remove="Rider\**\*" />
     <EmbeddedResource Remove="Rider\**\*" />
     <Content Remove="Rider\**\*" />
+
+    <Compile Remove="ComplexityErrorGutterMark.cs" />
+    <Compile Remove="ComplexityWarningGutterMark.cs" />
+
+    <Compile Update="**\*.xaml.cs">
+        <DependentUpon>%(Filename)</DependentUpon>
+        <SubType>Code</SubType>
+    </Compile>
+    <Page Include="**\*.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).dll" PackagePath="dotFiles" Pack="true" />
     <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).pdb" PackagePath="dotFiles" Pack="true" />
+
+    <!-- TODO: add additional assemblies -->
   </ItemGroup>
 
   <ItemGroup>
@@ -57,10 +57,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
 
-  <!--<ItemGroup Condition="'$(OS)' != 'Unix'">-->
-    <!--<Reference Include="PresentationCore" />-->
-    <!--<Reference Include="PresentationFramework" />-->
-
+  <ItemGroup Condition="'$(OS)' != 'Unix'">
     <!--<ThemedIconsXamlV3 Include="**\*-color.xaml">-->
       <!--<ThemeColumns>Color</ThemeColumns>-->
       <!--<RemoveBackgroundElement>True</RemoveBackgroundElement>-->
@@ -73,7 +70,7 @@
       <!--<SubType>Designer</SubType>-->
       <!--<Generator>MSBuild:Compile</Generator>-->
     <!--</ThemedIconsXamlV3>-->
-  <!--</ItemGroup>-->
+  </ItemGroup>
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
