@@ -1,8 +1,7 @@
 <Project>
   <PropertyGroup>
-    <SdkVersion>2020.2.0-eap02</SdkVersion>
+    <SdkVersion>2020.3.0-eap07</SdkVersion>
 
-    <PackageId>JetBrains.PresentationAssistant</PackageId>
     <Title>Presentation Assistant</Title>
     <Description>Shows the name and keyboard shortcuts of invoked actions.</Description>
 

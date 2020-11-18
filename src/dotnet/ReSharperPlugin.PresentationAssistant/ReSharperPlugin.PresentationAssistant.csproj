@@ -3,6 +3,7 @@
   <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <RootNamespace>JetBrains.ReSharper.Plugins.PresentationAssistant</RootNamespace>
+    <PackageId>JetBrains.PresentationAssistant</PackageId>
   </PropertyGroup>
 
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
