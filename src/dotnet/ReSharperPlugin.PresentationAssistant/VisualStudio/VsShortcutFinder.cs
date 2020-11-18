@@ -15,9 +15,9 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
     {
         private readonly DTE dte;
         private readonly IThreading threading;
-        private readonly IVsActionsDefs vsActionDefs;
+        private readonly IVsOverridingActionsDefs vsActionDefs;
 
-        public VsShortcutFinder(DTE optionalDte, IThreading threading, IVsActionsDefs vsActionDefs)
+        public VsShortcutFinder(DTE optionalDte, IThreading threading, IVsOverridingActionsDefs vsActionDefs)
         {
             dte = optionalDte;
             this.threading = threading;
@@ -38,7 +38,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 
             // def.CommandId is the command ID of the ReSharper action. We want the command ID
             // of the VS command it's overriding
-            var commandId = vsActionDefs.TryGetOverriddenCommandIds(def).FirstOrDefault();
+            var commandId = vsActionDefs.TryGetOverriddenCommandIds(def.ActionId).FirstOrDefault();
             if (commandId == null)
                 return null;
 
