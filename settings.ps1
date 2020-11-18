@@ -1,5 +1,5 @@
 $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-$PluginId = "ReSharperPlugin.PresentationAssistant"
+$PluginId = "JetBrains.PresentationAssistant"
 $SolutionPath = "$PSScriptRoot\PresentationAssistant.sln"
 $SourceBasePath = "$PSScriptRoot\src\dotnet"
 
