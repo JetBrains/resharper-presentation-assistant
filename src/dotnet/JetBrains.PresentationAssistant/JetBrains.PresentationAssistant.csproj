@@ -44,7 +44,7 @@
     </Page>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == ''">
+  <ItemGroup>
     <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).dll" PackagePath="dotFiles" Pack="true" />
     <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).pdb" PackagePath="dotFiles" Pack="true" />
 
