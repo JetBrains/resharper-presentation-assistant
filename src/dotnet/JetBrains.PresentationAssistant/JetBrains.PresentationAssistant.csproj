@@ -22,7 +22,7 @@
     <PackageReference Include="VSSDK.Shell.11" Version="11.0.4" PrivateAssets="all" />
     <PackageReference Include="VSSDK.Shell.Immutable.11" Version="11.0.4" PrivateAssets="all" />
     <!-- TODO: https://github.com/NuGet/Home/issues/7154 -->
-    <PackageReference Include="Wave" Version="[$(WaveVersion)]" />
+    <PackageReference Include="Wave" Version="[$(WaveVersion),$(UpperWaveVersion))" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,7 +44,7 @@
     </Page>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == ''">
     <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).dll" PackagePath="dotFiles" Pack="true" />
     <Content Include="bin\$(AssemblyName)\$(Configuration)\$(AssemblyName).pdb" PackagePath="dotFiles" Pack="true" />
 
