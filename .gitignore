@@ -13,7 +13,6 @@ output
 *.cache
 
 # IDEs
-.idea
 .vs
 _ReSharper*
 _dotTrace*
