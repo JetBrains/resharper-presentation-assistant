@@ -4,13 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:pa="clr-namespace:JetBrains.ReSharper.Plugins.PresentationAssistant"
+        xmlns:platformUI="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.11.0"
         mc:Ignorable="d"
         Width="Auto" Height="Auto"
         ShowActivated="False"
         ShowInTaskbar="False"
         Focusable="False"
-        Background="{DynamicResource {x:Static pa:PresentationAssistantThemeColor.PresentationAssistantWindowBackgroundBrushKey}}"
-        Foreground="{DynamicResource {x:Static pa:PresentationAssistantThemeColor.PresentationAssistantWindowForegroundBrushKey}}"
+        Background="{DynamicResource {x:Static platformUI:EnvironmentColors.AccentLightBrushKey}}"
+        Foreground="{DynamicResource {x:Static platformUI:EnvironmentColors.PanelTextBrushKey}}"
         FontSize="24"
         FontFamily="Segoe UI"
         WindowStyle="None"
@@ -92,7 +93,7 @@
   <!-- Dark theme colours: Black border + #FF497549 background-->
   <!-- Light theme colours: border? + #FFBAEEBA background -->
 
-    <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static pa:PresentationAssistantThemeColor.PresentationAssistantWindowBorderBrushKey}}" Padding="10 5 10 5">
+    <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static platformUI:EnvironmentColors.AccentBorderBrushKey}}" Padding="10 5 10 5">
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- Don't mess with the formatting of the tags! -->
             <TextBlock Text="{Binding Path, Mode=OneTime}" />
