@@ -5,7 +5,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
     // TODO: Proper zone requirements
     [ZoneMarker]
-    public class ZoneMarker : IRequire<DaemonZone>
+    public class ZoneMarker : IRequire<DaemonZone>, IRequire<IUIInteractiveEnvZone>
     {
     }
 }
