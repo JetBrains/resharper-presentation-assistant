@@ -7,17 +7,18 @@ using JetBrains.Application.Threading;
 using JetBrains.Application.UI.ActionsRevised.Loader;
 using JetBrains.VsIntegration.Shell.ActionManagement;
 using JetBrains.VsIntegration.Shell.Actions.Revised;
+using JetBrains.VsIntegration.Shell.EnvDte;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 {
     [ShellComponent]
     public class VsShortcutFinder : OverriddenShortcutFinder
     {
-        private readonly DTE dte;
+        private readonly IEnvDteWrapper dte;
         private readonly IThreading threading;
         private readonly IVsOverridingActionsDefs vsActionDefs;
 
-        public VsShortcutFinder(DTE optionalDte, IThreading threading, IVsOverridingActionsDefs vsActionDefs)
+        public VsShortcutFinder(IEnvDteWrapper optionalDte, IThreading threading, IVsOverridingActionsDefs vsActionDefs)
         {
             dte = optionalDte;
             this.threading = threading;
@@ -49,7 +50,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
             return GetVsShortcut(command);
         }
 
-        public ActionShortcut GetVsShortcut(Command command)
+        public ActionShortcut GetVsShortcut(IEnvDteCommand command)
         {
             var binding = GetFirstBinding(command.Bindings);
             if (binding != null)

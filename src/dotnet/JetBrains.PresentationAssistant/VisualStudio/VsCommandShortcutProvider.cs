@@ -14,6 +14,7 @@ using JetBrains.Util;
 using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.Shell;
 using JetBrains.VsIntegration.Shell.ActionManagement;
+using JetBrains.VsIntegration.Shell.EnvDte;
 using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -26,10 +27,10 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
         private readonly IVsCmdNameMapping vsCmdNameMapping;
         private readonly VsShortcutFinder vsShortcutFinder;
         private readonly IActionShortcuts actionShortcuts;
-        private readonly DTE dte;
+        private readonly IEnvDteWrapper dte;
         private readonly IDictionary<string, CommandBarActionDef> cachedActionDefs;
 
-        public VsCommandShortcutProvider(Lifetime lifetime, ShortcutDisplayStatistics statistics, DTE dte,
+        public VsCommandShortcutProvider(Lifetime lifetime, ShortcutDisplayStatistics statistics, IEnvDteWrapper dte,
                                          IVsCmdNameMapping vsCmdNameMapping,
                                          VsShortcutFinder vsShortcutFinder,
                                          VsToolsOptionsMonitor vsToolsOptionsMonitor,
@@ -128,7 +129,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
                 public ShortcutSequence VsShortcut;
             }
 
-            public CommandBarActionDef(VsShortcutFinder vsShortcutFinder, DTE dte, string actionId,
+            public CommandBarActionDef(VsShortcutFinder vsShortcutFinder, IEnvDteWrapper dte, string actionId,
                                        CommandID commandId, CommandBarControl control,
                                        CommandBarPopup[] parentPopups)
             {
