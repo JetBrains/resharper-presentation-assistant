@@ -1,12 +1,18 @@
 ﻿using System.Drawing;
 using JetBrains.Application;
 using JetBrains.Application.UI.Components.Theming;
+using JetBrains.Platform.VisualStudio.SinceVs11.Shell.Theming;
+using Microsoft.VisualStudio.Shell;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
     // The colours we're defining, with default colours
     public class PresentationAssistantThemeColor : ThemeColor
     {
+        public static ThemeResourceKey AccentLightBrushKey = BundledThemeColors.Environment.AccentLightBrushKey;
+        public static ThemeResourceKey PanelTextBrushKey = BundledThemeColors.Environment.PanelTextBrushKey;
+        public static ThemeResourceKey AccentBorderBrushKey = BundledThemeColors.Environment.AccentBorderBrushKey;
+
         public static readonly PresentationAssistantThemeColor PresentationAssistantWindowBorder =
             new PresentationAssistantThemeColor("PresentationAssistantWindowBorder", Color.FromArgb(0xD1, 0xD1, 0xD1));
         public static readonly PresentationAssistantThemeColor PresentationAssistantWindowBackground =
