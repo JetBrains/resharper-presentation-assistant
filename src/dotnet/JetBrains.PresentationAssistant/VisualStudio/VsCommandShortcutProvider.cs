@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
-using EnvDTE;
 using JetBrains.Annotations;
 using JetBrains.Application;
 using JetBrains.Application.UI.ActionsRevised.Shortcuts;

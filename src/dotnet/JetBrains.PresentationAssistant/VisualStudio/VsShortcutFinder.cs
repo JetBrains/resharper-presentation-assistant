@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using EnvDTE;
 using JetBrains.Application;
 using JetBrains.Application.Shortcuts;
 using JetBrains.Application.Threading;
