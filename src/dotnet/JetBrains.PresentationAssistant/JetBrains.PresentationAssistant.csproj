@@ -19,8 +19,19 @@
   <ItemGroup>
     <PackageReference Include="JetBrains.ReSharper.SDK" Version="$(SdkVersion)" PrivateAssets="all" />
     <PackageReference Include="JetBrains.Platform.VisualStudio.SinceVs11" Version="213.0.20211207.75016" PrivateAssets="all" />
+      <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+<!--    <PackageReference Include="Microsoft.VisualStudio.Interop" Version="17.0.32112.339" />-->
+      
+      
     <PackageReference Include="Microsoft.VisualStudio.CommandBars" Version="8.0.0" PrivateAssets="all" />
-    <PackageReference Include="VSSDK.Shell.11" Version="11.0.4" PrivateAssets="all" />
+      
+<!--      <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="17.0.32112.339" />-->
+<!--      <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />-->
+<!--      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />-->
+<!--      <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />-->
+      
+      
+<!--    <PackageReference Include="VSSDK.Shell.11" Version="11.0.4" PrivateAssets="all" />-->
     <PackageReference Include="VSSDK.Shell.Immutable.11" Version="11.0.4" PrivateAssets="all" />
     <!-- TODO: https://github.com/NuGet/Home/issues/7154 -->
     <PackageReference Include="Wave" Version="[$(WaveVersion),$(UpperWaveVersion))" />
@@ -53,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
