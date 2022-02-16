@@ -5,7 +5,7 @@ using JetBrains.VsIntegration.Shell.Zones;
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 {
     [ZoneMarker]
-    public class ZoneMarker : IRequire<IVisualStudioFrontendEnvZone>, IRequire<ISinceVs11FrontEnvZone>
+    public class ZoneMarker : IRequire<ISinceVs11FrontEnvZone>
     {
     }
 }
