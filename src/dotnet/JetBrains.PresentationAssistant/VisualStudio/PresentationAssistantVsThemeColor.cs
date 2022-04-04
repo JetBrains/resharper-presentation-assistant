@@ -27,11 +27,11 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
     [ShellComponent]
     public class Vs11PresentationAssistantThemeColourFiller : PresentationAssistantThemeColourFiller
     {
-        private readonly IVsUIShell5 vsUiShell5;
+        private readonly VS11ThemeManager _themeManager;
 
-        public Vs11PresentationAssistantThemeColourFiller(IVsUIShell5 vsUIShell5)
+        public Vs11PresentationAssistantThemeColourFiller(VS11ThemeManager themeManager)
         {
-            vsUiShell5 = vsUIShell5;
+            _themeManager = themeManager;
         }
 
         public override void FillColorTheme(ColorTheme theme)
@@ -40,12 +40,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
             base.FillColorTheme(theme);
 
             // Override with the values from Visual Studio's Fonts and Colours dialog
-            theme.SetGDIColor(PresentationAssistantThemeColor.PresentationAssistantWindowBorder,
-                VS11ThemeManager.GetThemedGDIColor(vsUiShell5, PresentationAssistantVsColours.BorderColourKey));
-            theme.SetGDIColor(PresentationAssistantThemeColor.PresentationAssistantWindowBackground,
-                VS11ThemeManager.GetThemedGDIColor(vsUiShell5, PresentationAssistantVsColours.BackgroundColourKey));
-            theme.SetGDIColor(PresentationAssistantThemeColor.PresentationAssistantWindowForeground,
-                VS11ThemeManager.GetThemedGDIColor(vsUiShell5, PresentationAssistantVsColours.ForegroundColourKey));
+            theme.SetColor(PresentationAssistantThemeColor.PresentationAssistantWindowBorder,
+                _themeManager.GetThemedColor(PresentationAssistantVsColours.BorderColourKey));
+            theme.SetColor(PresentationAssistantThemeColor.PresentationAssistantWindowBackground,
+                _themeManager.GetThemedColor(PresentationAssistantVsColours.BackgroundColourKey));
+            theme.SetColor(PresentationAssistantThemeColor.PresentationAssistantWindowForeground,
+                _themeManager.GetThemedColor(PresentationAssistantVsColours.ForegroundColourKey));
         }
 
         private static class PresentationAssistantVsColours
