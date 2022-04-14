@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.VisualStudio.CommandBars" Version="8.0.0" PrivateAssets="all" />
     <PackageReference Include="VSSDK.Shell.Immutable.11" Version="11.0.4" PrivateAssets="all" />
     <!-- TODO: https://github.com/NuGet/Home/issues/7154 -->
-    <PackageReference Include="Wave" Version="[$(WaveVersion),$(UpperWaveVersion))" />
+    <PackageReference Include="Wave" Version="[$(WaveVersion)]" />
   </ItemGroup>
 
   <ItemGroup>
