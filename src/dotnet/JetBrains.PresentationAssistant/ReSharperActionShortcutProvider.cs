@@ -4,9 +4,9 @@ using JetBrains.Application;
 using JetBrains.Application.Settings;
 using JetBrains.Application.Settings.Implementation;
 using JetBrains.Application.Shortcuts;
-using JetBrains.Application.UI.Actions.Utils;
 using JetBrains.Application.UI.ActionsRevised.Loader;
 using JetBrains.Application.UI.ActionsRevised.Shortcuts;
+using JetBrains.Application.UI.ActionSystem.UserPresentation;
 using JetBrains.Application.UI.Controls.JetPopupMenu.Detail;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
@@ -25,7 +25,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly ShortcutDisplayStatistics statistics;
         private readonly IActionDefs defs;
         private readonly IActionShortcuts actionShortcuts;
-        private readonly ActionPresentationHelper actionPresentationHelper;
+        private readonly IActionPresentableTexts actionPresentableTexts;
         private readonly OverriddenShortcutFinder overriddenShortcutFinder;
         private readonly HotspotSessionExecutor hotspotSessionExecutor;
         private readonly SettingsStore settingsStore;
@@ -33,7 +33,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         public ReSharperActionShortcutProvider(ShortcutDisplayStatistics statistics,
                                                IActionDefs defs,
                                                IActionShortcuts actionShortcuts,
-                                               ActionPresentationHelper actionPresentationHelper,
+                                               IActionPresentableTexts actionPresentableTexts,
                                                OverriddenShortcutFinder overriddenShortcutFinder,
                                                HotspotSessionExecutor hotspotSessionExecutor,
                                                SettingsStore settingsStore)
@@ -41,7 +41,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
             this.statistics = statistics;
             this.defs = defs;
             this.actionShortcuts = actionShortcuts;
-            this.actionPresentationHelper = actionPresentationHelper;
+            this.actionPresentableTexts = actionPresentableTexts;
             this.overriddenShortcutFinder = overriddenShortcutFinder;
             this.hotspotSessionExecutor = hotspotSessionExecutor;
             this.settingsStore = settingsStore;
@@ -198,7 +198,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 
         private string GetPath(IActionDefWithId def)
         {
-            var path = actionPresentationHelper.GetPathPresentationToRoot(def);
+            var path = actionPresentableTexts.GetPathToMenuRoot(def);
 
             return !string.IsNullOrEmpty(path) ? MnemonicStore.RemoveMnemonicMark(path) + " \u2192 " : string.Empty;
         }

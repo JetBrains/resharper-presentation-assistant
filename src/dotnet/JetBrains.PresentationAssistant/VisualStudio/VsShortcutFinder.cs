@@ -3,7 +3,9 @@ using System.Linq;
 using JetBrains.Application;
 using JetBrains.Application.Shortcuts;
 using JetBrains.Application.Threading;
+using JetBrains.Application.UI.Actions.Automations;
 using JetBrains.Application.UI.ActionsRevised.Loader;
+using JetBrains.Application.UI.ActionsRevised.Shortcuts;
 using JetBrains.VsIntegration.Shell.ActionManagement;
 using JetBrains.VsIntegration.Shell.Actions.Revised;
 using JetBrains.VsIntegration.Shell.EnvDte;
@@ -15,13 +17,15 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
     {
         private readonly IEnvDteWrapper dte;
         private readonly IThreading threading;
-        private readonly IVsOverridingActionsDefs vsActionDefs;
+        private readonly IVsOverridingActionDefs vsActionDefs;
+        private readonly VsKeyBindingsCache keyBindingsCache;
 
-        public VsShortcutFinder(IEnvDteWrapper optionalDte, IThreading threading, IVsOverridingActionsDefs vsActionDefs)
+        public VsShortcutFinder(IEnvDteWrapper optionalDte, IThreading threading, IVsOverridingActionDefs vsActionDefs, VsKeyBindingsCache keyBindingsCache)
         {
             dte = optionalDte;
             this.threading = threading;
             this.vsActionDefs = vsActionDefs;
+            this.keyBindingsCache = keyBindingsCache;
         }
 
         // This is the current key binding for the command being overridden by an action
@@ -38,15 +42,12 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 
             // def.CommandId is the command ID of the ReSharper action. We want the command ID
             // of the VS command it's overriding
-            var commandId = vsActionDefs.TryGetOverriddenCommandIds(def.ActionId).FirstOrDefault();
-            if (commandId == null)
+            var vsOverridingDef = vsActionDefs.GetOverriddenVsCommands(def).FirstOrDefault();
+            if (vsOverridingDef == null)
                 return null;
 
-            var command = VsCommandHelpers.TryGetVsCommandAutomationObject(commandId, dte);
-            if (command == null)
-                return null;
-
-            return GetVsShortcut(command);
+            var binding = keyBindingsCache.GetKeyBindings(vsOverridingDef.OverriddenCommandId).FirstOrDefault();
+            return binding?.Shortcut;
         }
 
         public ActionShortcut GetVsShortcut(IEnvDteCommand command)
