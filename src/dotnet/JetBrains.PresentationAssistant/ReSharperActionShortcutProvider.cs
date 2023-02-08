@@ -28,7 +28,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant
         private readonly IActionPresentableTexts actionPresentableTexts;
         private readonly OverriddenShortcutFinder overriddenShortcutFinder;
         private readonly HotspotSessionExecutor hotspotSessionExecutor;
-        private readonly SettingsStore settingsStore;
+        private readonly ISettingsStore settingsStore;
 
         public ReSharperActionShortcutProvider(ShortcutDisplayStatistics statistics,
                                                IActionDefs defs,
