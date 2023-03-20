@@ -21,8 +21,7 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.CommandBars" Version="8.0.0" PrivateAssets="all" />
     <PackageReference Include="VSSDK.Shell.Immutable.11" Version="11.0.4" PrivateAssets="all" />
-    <!-- TODO: https://github.com/NuGet/Home/issues/7154 -->
-    <PackageReference Include="Wave" Version="[$(WaveVersion)]" />
+    <PackageReference Include="Wave" Version="$(WaveVersion)" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,21 +56,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(OS)' != 'Unix'">
-    <!--<ThemedIconsXamlV3 Include="**\*-color.xaml">-->
-      <!--<ThemeColumns>Color</ThemeColumns>-->
-      <!--<RemoveBackgroundElement>True</RemoveBackgroundElement>-->
-      <!--<SubType>Designer</SubType>-->
-      <!--<Generator>MSBuild:Compile</Generator>-->
-    <!--</ThemedIconsXamlV3>-->
-    <!--<ThemedIconsXamlV3 Include="**\*-graydark.xaml">-->
-      <!--<ThemeColumns>GrayDark</ThemeColumns>-->
-      <!--<RemoveBackgroundElement>True</RemoveBackgroundElement>-->
-      <!--<SubType>Designer</SubType>-->
-      <!--<Generator>MSBuild:Compile</Generator>-->
-    <!--</ThemedIconsXamlV3>-->
   </ItemGroup>
 
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
