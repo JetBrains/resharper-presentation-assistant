@@ -1,6 +1,5 @@
 ﻿using JetBrains.Application.BuildScript.Application.Zones;
-using JetBrains.Platform.VisualStudio.SinceVs11.Shell.Zones;
-using JetBrains.VsIntegration.Shell.Zones;
+using JetBrains.Platform.VisualStudio.SinceVs11.Zones;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
 {

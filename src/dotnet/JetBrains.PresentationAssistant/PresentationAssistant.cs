@@ -1,12 +1,11 @@
 ﻿using JetBrains.Application;
 using JetBrains.Application.ActivityTrackingNew;
-using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.Lifetimes;
 
 namespace JetBrains.ReSharper.Plugins.PresentationAssistant
 {
-    [ShellComponent(Requirement = InstantiationRequirement.Instant)]
+    [ShellComponent]
     public class PresentationAssistant : IActivityTracking
     {
         private readonly ShortcutProvider shortcutProvider;
