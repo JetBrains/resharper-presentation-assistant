@@ -9,6 +9,7 @@ using JetBrains.Application.UI.ActionsRevised.Shortcuts;
 using JetBrains.Application.UI.Controls.JetPopupMenu.Detail;
 using JetBrains.Diagnostics;
 using JetBrains.Lifetimes;
+using JetBrains.Platform.VisualStudio.Protocol.Frontend.Shell;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using JetBrains.VsIntegration.Shell;
@@ -32,7 +33,7 @@ namespace JetBrains.ReSharper.Plugins.PresentationAssistant.VisualStudio
         public VsCommandShortcutProvider(Lifetime lifetime, ShortcutDisplayStatistics statistics, IEnvDteWrapper dte,
                                          IVsCmdNameMapping vsCmdNameMapping,
                                          VsShortcutFinder vsShortcutFinder,
-                                         VsToolsOptionsMonitor vsToolsOptionsMonitor,
+                                         IVsToolsOptionsMonitorInterop vsToolsOptionsMonitor,
                                          IActionShortcuts actionShortcuts)
         {
             this.statistics = statistics;
