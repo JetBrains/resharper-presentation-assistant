@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <SdkVersion>2024.2.0</SdkVersion>
+    <SdkVersion>2024.3.0-eap01</SdkVersion>
 
     <Title>Presentation Assistant</Title>
     <Description>Shows the name and keyboard shortcuts of invoked actions.</Description>
